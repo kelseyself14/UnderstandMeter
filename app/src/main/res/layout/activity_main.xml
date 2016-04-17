@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="edu.augustana.csc490.understandmeter.MainActivity"
-    android:background="@drawable/office2">
+    android:background="@drawable/classroom">
 
     <Button
         android:layout_width="wrap_content"
@@ -39,6 +39,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:textSize="55sp"
-        android:textColor="#1a1919"
-        android:theme="@style/Base.TextAppearance.AppCompat.Title" />
+        android:textColor="#1a1919"/>
 </RelativeLayout>
