@@ -3,4 +3,7 @@
     <string name="heyTeacherTitle">Hey Teacher!</string>
     <string name="createClass">Create New Class</string>
     <string name="joinClass">Join Class</string>
+    <string name="understand">I Understand!</string>
+    <string name="notUnderstand">I Do Not Understand!</string>
+    <string name="logout">Log Out</string>
 </resources>
