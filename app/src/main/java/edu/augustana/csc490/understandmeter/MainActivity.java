@@ -10,10 +10,13 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private Button jClass;
+    private Button createClass;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createClass = (Button) findViewById(R.id.createClass);
+        createClass.setOnClickListener(launchSettings);
         jClass = (Button)  findViewById(R.id.joinClass);
         jClass.setOnClickListener(launchJoinClass);
     }
@@ -22,6 +25,13 @@ public class MainActivity extends AppCompatActivity {
         // A TOAST WITH A SHORT DISPLAY LIFE
         Toast.makeText(this, paintingDescription, Toast.LENGTH_SHORT).show();
     }
+    private View.OnClickListener launchSettings = new View.OnClickListener(){
+        @Override
+        public void onClick(View view) {
+            displayToast("Launching Settings");
+            launchTargetActivity(createClass);
+        }
+    };
     private View.OnClickListener launchJoinClass = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -31,7 +41,15 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     public void launchTargetActivity (View btn){
-        Intent intent = new Intent(getApplicationContext(), UnderstandButtons.class);
+        if(btn == jClass){
+            Intent intent = new Intent(getApplicationContext(), UnderstandButtons.class);
+            intent.putExtra("JoinClass",0);
+            startActivity(intent);
+        } else if (btn == createClass){
+            Intent intent = new Intent(getApplicationContext(), Settings.class);
+            intent.putExtra("CreateClass",0);
+            startActivity(intent);
+        }
 
         /*try {
             numShapes = Integer.parseInt(numImagesEditText.getText().toString());
@@ -39,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (NumberFormatException e){
             numShapes = 1;
         }*/
-        intent.putExtra("JoinClass", 0);
-        startActivity(intent);
     }
+
 }
