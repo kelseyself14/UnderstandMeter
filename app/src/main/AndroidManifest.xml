@@ -16,6 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".UnderstandButtons"></activity>
+        <activity android:name=".Settings"></activity>
     </application>
 
 </manifest>
