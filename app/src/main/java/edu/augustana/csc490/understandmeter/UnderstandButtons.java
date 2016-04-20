@@ -22,6 +22,8 @@ public class UnderstandButtons extends AppCompatActivity {
         int option = intent.getIntExtra("JoinClass", 0);
         Button NotUnderstand = (Button)  findViewById(R.id.NotUnderstand);
         NotUnderstand.setOnClickListener(displayNotUnderstand);
+        mCountDown=(TextView) findViewById(R.id.mCountDown);
+
     }
     private View.OnClickListener displayNotUnderstand = new View.OnClickListener() {
         @Override
@@ -37,21 +39,19 @@ public class UnderstandButtons extends AppCompatActivity {
 
         }
     };
-    private void displayToast(String paintingDescription) {
-        // SHOW THE INFORMATION ABOUT THE PAINTING AS
-        // A TOAST WITH A SHORT DISPLAY LIFE
-        Toast.makeText(this, paintingDescription, Toast.LENGTH_SHORT).show();
+    private void displayToast(String description) {
+        Toast.makeText(this, description, Toast.LENGTH_SHORT).show();
     }
 
     public void startCountdown(){
         new CountDownTimer(10000, 1000) {
 
             public void onTick(long millisUntilFinished) {
-               mCountDown.setText("seconds remaining: " + millisUntilFinished / 1000);
+               mCountDown.setText("Seconds Remaining: " + millisUntilFinished / 1000);
             }
 
             public void onFinish() {
-                mCountDown.setText("0");
+                mCountDown.setText("Press Again");
             }
         }.start();
         value = false;
