@@ -6,4 +6,11 @@
     <string name="understand">I Understand!</string>
     <string name="notUnderstand">I Do Not Understand!</string>
     <string name="logout">Log Out</string>
+    <string name="studentLabel">Students: </string>
+    <string name="teacherLabel">Teacher: </string>
+    <string name="teacherHelp">Help text</string>
+    <string name="studentHelp">In this app you
+        first click on join class. That will take you to a
+        new screen that you can click on I do understand
+        or I do not understand.</string>
 </resources>
