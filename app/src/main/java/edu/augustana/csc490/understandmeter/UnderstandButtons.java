@@ -14,6 +14,7 @@ public class UnderstandButtons extends AppCompatActivity {
     private TextView mCountDown;
     private boolean value = true;
     private Button notUnderstand;
+    private CountDownTimer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,14 +25,26 @@ public class UnderstandButtons extends AppCompatActivity {
         notUnderstand = (Button)  findViewById(R.id.NotUnderstand);
         notUnderstand.setOnClickListener(displayNotUnderstand);
         mCountDown=(TextView) findViewById(R.id.mCountDown);
+        timer = new CountDownTimer(20000, 1000) {
 
+            public void onTick(long millisUntilFinished) {
+                mCountDown.setText("Seconds Remaining: " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                value = true;
+                notUnderstand.setClickable(value);
+                mCountDown.setText("Press Again");
+                // Add code for sending a "negative tick" via fire base!!!
+
+            }
+        };
     }
     private View.OnClickListener displayNotUnderstand = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             // MAKE A METHOD CALL TO DISPLAY THE INFORMATION
             value = false;
-            notUnderstand.setEnabled(value);
             notUnderstand.setClickable(value);
             displayToast("You Don't Understand! Teacher Notified");
 
@@ -45,20 +58,7 @@ public class UnderstandButtons extends AppCompatActivity {
     }
 
     public void startCountdown(){
-        new CountDownTimer(10000, 1000) {
+        timer.start();
 
-            public void onTick(long millisUntilFinished) {
-               mCountDown.setText("Seconds Remaining: " + millisUntilFinished / 1000);
-            }
-
-            public void onFinish() {
-                mCountDown.setText("Press Again");
-            }
-        }.start();
-        value = true;
-        notUnderstand.setEnabled(value);
-        notUnderstand.setClickable(value);
-
-        // Add code for sending a "negative tick" via fire base!!!
     }
 }
