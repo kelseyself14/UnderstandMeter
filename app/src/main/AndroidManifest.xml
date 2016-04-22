@@ -17,7 +17,8 @@
         </activity>
         <activity android:name=".UnderstandButtons" />
         <activity android:name=".Settings" />
-        <activity android:name=".help"></activity>
+        <activity android:name=".help" />
+        <activity android:name=".Teacher_View"></activity>
     </application>
 
 </manifest>
