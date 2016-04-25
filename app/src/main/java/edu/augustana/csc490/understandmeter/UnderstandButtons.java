@@ -14,6 +14,7 @@ public class UnderstandButtons extends AppCompatActivity {
     private TextView mCountDown;
     private boolean value = true;
     private Button notUnderstand;
+    private Button logOut;
     private CountDownTimer timer;
 
     @Override
@@ -24,6 +25,8 @@ public class UnderstandButtons extends AppCompatActivity {
         int option = intent.getIntExtra("JoinClass", 0);
         notUnderstand = (Button)  findViewById(R.id.NotUnderstand);
         notUnderstand.setOnClickListener(displayNotUnderstand);
+        logOut = (Button) findViewById(R.id.LogOut);
+        logOut.setOnClickListener(returnMain);
         mCountDown=(TextView) findViewById(R.id.mCountDown);
         timer = new CountDownTimer(20000, 1000) {
 
@@ -40,6 +43,15 @@ public class UnderstandButtons extends AppCompatActivity {
             }
         };
     }
+
+    private View.OnClickListener returnMain= new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            displayToast("Returning to Main Menu");
+            launchTargetActivity(logOut);
+        }
+    };
+
     private View.OnClickListener displayNotUnderstand = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -55,6 +67,12 @@ public class UnderstandButtons extends AppCompatActivity {
     };
     private void displayToast(String description) {
         Toast.makeText(this, description, Toast.LENGTH_SHORT).show();
+    }
+
+    public void launchTargetActivity (View btn) {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra("returnMain", 0);
+        startActivity(intent);
     }
 
     public void startCountdown(){
