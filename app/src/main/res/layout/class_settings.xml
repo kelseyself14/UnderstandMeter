@@ -20,7 +20,8 @@
         android:layout_gravity="center_horizontal"
         android:hint="Enter Class Name"
         android:textColor="#ffffff"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        android:textColorHint="#ffffff" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,7 +40,8 @@
         android:id="@+id/numStudents"
         android:hint="Enter Number of Students"
         android:textColor="#ffffff"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        android:textColorHint="#ffffff" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -58,7 +60,8 @@
         android:id="@+id/warningPercentage"
         android:hint="Enter Number"
         android:textSize="25sp"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -73,7 +76,8 @@
         android:id="@+id/departureAlert"
         android:textColor="#ffffff"
         android:textSize="30sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:buttonTint="#ffffff" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -98,7 +102,8 @@
         android:id="@+id/phoneNumber"
         android:hint="(ex. 123-456-7890)"
         android:textColor="#ffffff"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        android:textColorHint="#ffffff" />
 
     <Button
         android:layout_width="wrap_content"
