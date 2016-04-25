@@ -11,6 +11,6 @@ public class Teacher_View extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher__view);
         Intent intent = getIntent();
-        int option = intent.getIntExtra("CreateClass", 0);
+        int option = intent.getIntExtra("CreateClass2", 0);
     }
 }
