@@ -1,7 +1,9 @@
-package edu.augustana.csc490.understandmeter;
+package edu.augustana.csc490.understandmeter.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import edu.augustana.csc490.understandmeter.R;
 
 public class help extends AppCompatActivity {
 

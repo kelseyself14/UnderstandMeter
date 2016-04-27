@@ -8,17 +8,17 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UnderstandButtons" />
-        <activity android:name=".Settings" />
-        <activity android:name=".help" />
-        <activity android:name=".Teacher_View"></activity>
+        <activity android:name=".activities.UnderstandButtons" />
+        <activity android:name=".activities.Settings" />
+        <activity android:name=".activities.help" />
+        <activity android:name=".activities.Teacher_View"></activity>
     </application>
 
 </manifest>

@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="edu.augustana.csc490.understandmeter.Teacher_View"
+    tools:context=".activities.Teacher_View"
     android:background="@drawable/office2">
 
     <TextView
