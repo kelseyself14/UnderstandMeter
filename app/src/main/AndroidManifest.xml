@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.augustana.csc490.understandmeter">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,8 +19,8 @@
         </activity>
         <activity android:name=".activities.UnderstandButtons" />
         <activity android:name=".activities.Settings" />
-        <activity android:name=".activities.help" />
-        <activity android:name=".activities.Teacher_View"></activity>
+        <activity android:name=".activities.Help" />
+        <activity android:name=".activities.TeacherView" />
     </application>
 
 </manifest>
