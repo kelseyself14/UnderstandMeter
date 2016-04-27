@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import edu.augustana.csc490.understandmeter.R;
 
-public class help extends AppCompatActivity {
+public class Help extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
