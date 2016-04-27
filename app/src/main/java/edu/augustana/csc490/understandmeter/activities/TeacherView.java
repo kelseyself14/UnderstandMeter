@@ -8,14 +8,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import edu.augustana.csc490.understandmeter.R;
-import edu.augustana.csc490.understandmeter.activities.MainActivity;
 
-public class Teacher_View extends AppCompatActivity {
+public class TeacherView extends AppCompatActivity {
     private Button endClass;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_teacher__view);
+        setContentView(R.layout.activity_teacher_view);
         Intent intent = getIntent();
         int option = intent.getIntExtra("CreateClass2", 0);
         endClass = (Button) findViewById(R.id.endClassButton);
