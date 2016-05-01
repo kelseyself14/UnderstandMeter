@@ -17,31 +17,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button createClass = (Button) findViewById(R.id.createClass);
-        createClass.setOnClickListener(launchSettings);
+        createClass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, Settings.class));
+            }
+        });
 
         Button jClass = (Button)  findViewById(R.id.joinClass);
-        jClass.setOnClickListener(launchJoinClass);
+        jClass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, UnderstandButtons.class));
+            }
+        });
     }
-
-    private View.OnClickListener launchSettings = new View.OnClickListener(){
-        @Override
-        public void onClick(View view) {
-            Toast.makeText(MainActivity.this, "Launching Settings", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MainActivity.this, Settings.class);
-            intent.putExtra("CreateClass", 0);
-            startActivity(intent);
-        }
-    };
-
-    private View.OnClickListener launchJoinClass = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            // MAKE A METHOD CALL TO DISPLAY THE INFORMATION
-            Toast.makeText(MainActivity.this, "Joining Class", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MainActivity.this, UnderstandButtons.class);
-            intent.putExtra("JoinClass", 0);
-            startActivity(intent);
-        }
-    };
 
 }

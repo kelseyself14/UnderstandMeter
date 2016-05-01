@@ -3,31 +3,71 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/office2"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".activities.TeacherView"
-    android:background="@drawable/office2">
+    tools:context=".activities.TeacherView">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/teacherCounter"
-        android:id="@+id/NumberCounter"
-        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/numberCounter"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="55dp"
-        android:textSize="100px"
-        android:textIsSelectable="false" />
+        android:text="@string/classId"
+        android:textSize="15sp" />
 
-    <Button
+    <TextView
+        android:id="@+id/numberCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="End Class"
-        android:id="@+id/endClassButton"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_centerHorizontal="true"
+        android:paddingTop="10dip"
+        android:text="@string/initializedNumberCount"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="80sp"
+        tools:ignore="UnusedAttribute" />
+
+    <TextView
+        android:id="@+id/showIDUsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/numberCounter"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="50dip"
+        android:text="@string/currentIDUsTitle"
+        android:textAlignment="center"
+        tools:ignore="UnusedAttribute" />
+
+    <TextView
+        android:id="@+id/showIDUs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/showIDUsTitle"
+        android:layout_centerHorizontal="true"
+        android:text="@string/initializedNumberCount"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="25sp" />
+
+    <Button
+        android:id="@+id/resetIDUCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/endClassButton"
+        android:layout_centerHorizontal="true"
+        android:background="@color/blue"
+        android:text="@string/resetIDUs"
+        android:layout_marginBottom="15dip"/>
+
+    <Button
+        android:id="@+id/endClassButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/red"
+        android:text="@string/endClass" />
 </RelativeLayout>

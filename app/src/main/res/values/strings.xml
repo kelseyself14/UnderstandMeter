@@ -1,17 +1,38 @@
 <resources>
     <string name="app_name">UnderstandMeter</string>
+
+    <!-- For the main activity -->
     <string name="heyTeacherTitle">Hey Teacher!</string>
     <string name="createClass">Create New Class</string>
     <string name="joinClass">Join Class</string>
-    <string name="understand">I Understand!</string>
-    <string name="notUnderstand">I Do Not Understand!</string>
-    <string name="logout">Log Out</string>
-    <string name="studentLabel">Students: </string>
-    <string name="teacherLabel">Teacher: </string>
     <string name="teacherHelp">Help text</string>
+
+    <!-- For the Help activity -->
     <string name="studentHelp">In this app you
         first click on join class. That will take you to a
         new screen that you can click on I do understand
         or I do not understand.</string>
-    <string name="teacherCounter">0</string>
+
+    <!-- For the teacher view class -->
+    <string name="logout">Log Out</string>
+    <string name="studentLabel">Students: </string>
+    <string name="teacherLabel">Teacher: </string>
+    <string name="initializedNumberCount">-1</string>
+    <string name="classId">Tell the students to type in ID number:</string>
+    <string name="endClass">End class</string>
+    <string name="resetIDUs">Reset Student Counter</string>
+    <string name="studentsNotifyTitle">Students message</string>
+    <string name="studentsNotifyContent">The specified portion of students do not understand
+        the topic.</string>
+    <string name="currentIDUsTitle">Currently, there are this many notifications from students who
+        do not understand.</string>
+
+    <!-- For the UnderstandButtons activity -->
+    <string name="countdownTitle">You can press the button to start</string>
+    <string name="countdownRepeat">You can press again</string>
+    <string name="understand">I Understand!</string>
+    <string name="notUnderstand">I Do Not Understand!</string>
+    <string name="classIdEnter">Enter the Class ID here</string>
+    <string name="connectToClass">Connect to classroom</string>
+
 </resources>

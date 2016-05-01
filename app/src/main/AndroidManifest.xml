@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="edu.augustana.csc490.understandmeter">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -17,10 +18,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.UnderstandButtons" />
-        <activity android:name=".activities.Settings" />
-        <activity android:name=".activities.Help" />
-        <activity android:name=".activities.TeacherView" />
+
+        <activity
+            android:name=".activities.UnderstandButtons"
+            android:parentActivityName=".activities.MainActivity"
+            tools:ignore="UnusedAttribute" />
+
+        <activity
+            android:name=".activities.Settings"
+            android:parentActivityName=".activities.MainActivity"
+            tools:ignore="UnusedAttribute" />
+
+        <activity
+            android:name=".activities.Help"
+            android:parentActivityName=".activities.MainActivity"
+            tools:ignore="UnusedAttribute" />
+
+        <activity
+            android:name=".activities.TeacherView"
+            android:parentActivityName=".activities.Settings"
+            tools:ignore="UnusedAttribute" />
+
+        
     </application>
 
 </manifest>
