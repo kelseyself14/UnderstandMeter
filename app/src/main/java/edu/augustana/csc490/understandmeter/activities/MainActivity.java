@@ -24,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button jClass = (Button)  findViewById(R.id.joinClass);
-        jClass.setOnClickListener(new View.OnClickListener() {
+        Button joinClass = (Button)  findViewById(R.id.joinClass);
+        joinClass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, UnderstandButtons.class));

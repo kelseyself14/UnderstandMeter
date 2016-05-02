@@ -26,7 +26,6 @@ public class TeacherView extends AppCompatActivity {
     private Firebase myFirebase;
     private boolean classIsActive = true;
 
-    private long classId = -1;
     private long IDUs = -1;
     private int classWarningThreshold = -1;
     private AlertDialog alert;
@@ -37,7 +36,7 @@ public class TeacherView extends AppCompatActivity {
         setContentView(R.layout.activity_teacher_view);
 
         Intent intent = getIntent();
-        classId = intent.getLongExtra("classID", -1);
+        long classId = intent.getLongExtra("classID", -1);
         int classSize = intent.getIntExtra("classSize", -1);
         classWarningThreshold = intent.getIntExtra("classWarningThreshold", -1);
 

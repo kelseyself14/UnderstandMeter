@@ -8,6 +8,7 @@ import java.util.Date;
  */
 public class Classroom {
 
+    //TODO: Maybe make all these private & use getters/setters.  You may need a zero-argument constructor.
     public long IDUs = 0;
     public long threshold = 9999;
     public double warningPercentage = 1.0;
@@ -15,21 +16,10 @@ public class Classroom {
     public String className = "Classroom";
     public long maxStudents = 9999;
 
-    public Classroom(long IDUs, long threshold, long maxStudents, String className) {
-        this.IDUs = IDUs;
-        this.threshold = threshold;
-        this.maxStudents = maxStudents;
-        this.className = className;
-    }
-
     public Classroom(long threshold, long maxStudents, String className) {
         this.threshold = threshold;
         this.maxStudents = maxStudents;
         this.className = className;
     }
 
-    public Classroom(long threshold, long maxStudents) {
-        this.threshold = threshold;
-        this.maxStudents = maxStudents;
-    }
 }

@@ -21,10 +21,10 @@ import edu.augustana.csc490.understandmeter.utilities.SavedValues;
 
 public class UnderstandButtons extends AppCompatActivity {
 
-    private TextView mCountDown;
+    private TextView countDownText;
     private boolean connected = false;
-    private EditText classIDEnter;
-    private Button notUnderstand;
+    private EditText classIDEditText;
+    private Button notUnderstandButton;
     private CountDownTimer timer;
     private long currentIDUs = -1;
     private Firebase myFirebase;
@@ -35,10 +35,10 @@ public class UnderstandButtons extends AppCompatActivity {
         setContentView(R.layout.activity_understand_buttons);
         Firebase.setAndroidContext(this);
 
-        classIDEnter = (EditText) findViewById(R.id.classIdEnter);
+        classIDEditText = (EditText) findViewById(R.id.classIdEnter);
 
-        notUnderstand = (Button) findViewById(R.id.NotUnderstand);
-        notUnderstand.setOnClickListener(displayNotUnderstand);
+        notUnderstandButton = (Button) findViewById(R.id.NotUnderstand);
+        notUnderstandButton.setOnClickListener(displayNotUnderstand);
 
         Button logOut = (Button) findViewById(R.id.logOut);
         logOut.setOnClickListener(returnMain);
@@ -46,17 +46,17 @@ public class UnderstandButtons extends AppCompatActivity {
         Button connectToClassroom = (Button) findViewById(R.id.connectToClass);
         connectToClassroom.setOnClickListener(connectToClassroomListener);
 
-        mCountDown = (TextView) findViewById(R.id.mCountDown);
+        countDownText = (TextView) findViewById(R.id.mCountDown);
         timer = new CountDownTimer(20000, 1000) {
 
             public void onTick(long millisUntilFinished) {
-                mCountDown.setText("Seconds Remaining: " + millisUntilFinished / 1000);
+                countDownText.setText("Seconds Remaining: " + millisUntilFinished / 1000);
             }
 
             public void onFinish() {
-                notUnderstand.setEnabled(true);
-                notUnderstand.setClickable(true);
-                mCountDown.setText("Press again");
+                notUnderstandButton.setEnabled(true);
+                notUnderstandButton.setClickable(true);
+                countDownText.setText("Press again");
             }
         };
     }
@@ -79,8 +79,8 @@ public class UnderstandButtons extends AppCompatActivity {
         public void onClick(View view) {
 
             if (connected) { // indicating a connection was made
-                notUnderstand.setClickable(false);
-                notUnderstand.setEnabled(false);
+                notUnderstandButton.setClickable(false);
+                notUnderstandButton.setEnabled(false);
                 Toast.makeText(UnderstandButtons.this, "Anonymously submitted", Toast.LENGTH_LONG).show();
 
                 myFirebase.child("IDUs").setValue(currentIDUs + 1);
@@ -97,9 +97,9 @@ public class UnderstandButtons extends AppCompatActivity {
     private View.OnClickListener connectToClassroomListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (!classIDEnter.getText().toString().isEmpty()) {
+            if (!classIDEditText.getText().toString().isEmpty()) {
                 connected = false;
-                long classId = Long.parseLong(classIDEnter.getText().toString());
+                long classId = Long.parseLong(classIDEditText.getText().toString());
                 myFirebase = new Firebase(SavedValues.FIREBASE_URL).child("classrooms/" + classId);
 
                 myFirebase.child("IDUs").addValueEventListener(new ValueEventListener() {
