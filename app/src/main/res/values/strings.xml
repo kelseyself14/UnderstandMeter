@@ -24,7 +24,7 @@
     <string name="resetIDUs">Reset Student Counter</string>
     <string name="studentsNotifyTitle">Students message</string>
     <string name="studentsNotifyContent">The specified portion of students do not understand
-        the topic, you suck ass a teacher.</string>
+        the topic.</string>
     <string name="currentIDUsTitle">This many students do not understand</string>
 
     <!-- For the UnderstandButtons activity -->
@@ -36,6 +36,7 @@
     <string name="classIdEnter">Enter the Class ID here</string>
     <string name="connectToClass">Connect to classroom</string>
     <string name="connectedToClass">Connected!</string>
+    <string name="pressAgain">Press again</string>
 
     <!-- For the settings activity -->
     <string name="settingsTitle">Class Setup</string>

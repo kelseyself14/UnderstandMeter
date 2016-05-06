@@ -3,8 +3,10 @@ package edu.augustana.csc490.understandmeter.activities;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +16,8 @@ import android.widget.Toast;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.MutableData;
+import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 
 import edu.augustana.csc490.understandmeter.R;
@@ -21,49 +25,85 @@ import edu.augustana.csc490.understandmeter.utilities.SavedValues;
 
 public class UnderstandButtons extends AppCompatActivity {
 
-    private TextView countDownText;
+    private static final String CLASS_SIG = "UnderstandButtons";
+
     private boolean connected = false;
+
+    private View mainLayout;
     private EditText classIDEditText;
-    private Button notUnderstandButton;
-    private Button connectToClassroom;
+    private TextView countDownText;
+    private Button notUnderstandButton, connectToClassroom;
+
     private CountDownTimer timer;
-    private long currentIDUs = -1;
     private Firebase myFirebase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_understand_buttons);
         Firebase.setAndroidContext(this);
-        getSupportActionBar().setTitle(R.string.studentTitle);
+
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setTitle(R.string.studentTitle);
+        }
+
+        mainLayout = findViewById(R.id.understandButtonsLayout);
 
         classIDEditText = (EditText) findViewById(R.id.classIdEnter);
 
         notUnderstandButton = (Button) findViewById(R.id.NotUnderstand);
-        notUnderstandButton.setOnClickListener(displayNotUnderstand);
+
+        if (notUnderstandButton != null) {
+            notUnderstandButton.setOnClickListener(displayNotUnderstand);
+        }
 
         Button logOut = (Button) findViewById(R.id.logOut);
-        logOut.setOnClickListener(returnMain);
+
+        if (logOut != null) {
+            logOut.setOnClickListener(returnMain);
+        }
 
         connectToClassroom = (Button) findViewById(R.id.connectToClass);
-        connectToClassroom.setOnClickListener(connectToClassroomListener);
+
+        if (connectToClassroom != null) {
+            connectToClassroom.setOnClickListener(connectToClassroomListener);
+        }
 
         countDownText = (TextView) findViewById(R.id.mCountDown);
         timer = new CountDownTimer(20000, 1000) {
 
             public void onTick(long millisUntilFinished) {
-                countDownText.setText("Seconds Remaining: " + millisUntilFinished / 1000);
+                String toShow = "Seconds Remaining: " + millisUntilFinished / 1000;
+                countDownText.setText(toShow);
             }
 
             public void onFinish() {
                 notUnderstandButton.setEnabled(true);
                 notUnderstandButton.setClickable(true);
-                countDownText.setText("Press again");
-                myFirebase.child("IDUs").setValue(currentIDUs - 1);
+                countDownText.setText(R.string.pressAgain);
+                myFirebase.child("idus").runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData mutableData) {
+                        mutableData.setValue((long) mutableData.getValue() - 1);
+                        return Transaction.success(mutableData);
+                    }
+
+                    @Override
+                    public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                        if (b) {
+                            String toPrint = "Success in decrementing!";
+                            Toast.makeText(UnderstandButtons.this, toPrint, Toast.LENGTH_SHORT).show();
+                            Log.d(CLASS_SIG, toPrint);
+                        }
+                    }
+                });
 
                 if (Build.VERSION.SDK_INT >= 23) {
                     notUnderstandButton.setBackgroundColor(getColor(R.color.red));
                 } else {
+                    //noinspection deprecation
                     notUnderstandButton.setBackgroundColor(getResources().getColor(R.color.red));
                 }
             }
@@ -94,18 +134,34 @@ public class UnderstandButtons extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= 23) {
                     notUnderstandButton.setBackgroundColor(getColor(R.color.grey));
                 } else {
+                    //noinspection deprecation
                     notUnderstandButton.setBackgroundColor(getResources().getColor(R.color.grey));
                 }
 
                 Toast.makeText(UnderstandButtons.this, "Anonymously submitted", Toast.LENGTH_LONG).show();
 
-                myFirebase.child("IDUs").setValue(currentIDUs + 1);
+                myFirebase.child("idus").runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData mutableData) {
+                        mutableData.setValue((long) mutableData.getValue() + 1);
+                        return Transaction.success(mutableData);
+                    }
+
+                    @Override
+                    public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                        if (b) {
+                            Toast.makeText(UnderstandButtons.this, "Success in incrementing!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
                 // the currentIDUs value will be updated via the callback from the server
 
                 timer.start();
             } else {
-                Snackbar.make(findViewById(R.id.understandButtonsLayout),
-                        "Connect to a classroom first.", Snackbar.LENGTH_LONG).show();
+                if (mainLayout != null) {
+                    Snackbar.make(mainLayout,
+                            "Connect to a classroom first.", Snackbar.LENGTH_LONG).show();
+                }
             }
         }
     };
@@ -118,21 +174,27 @@ public class UnderstandButtons extends AppCompatActivity {
                 long classId = Long.parseLong(classIDEditText.getText().toString());
                 myFirebase = new Firebase(SavedValues.FIREBASE_URL).child("classrooms/" + classId);
 
-                myFirebase.child("IDUs").addValueEventListener(new ValueEventListener() {
+                myFirebase.child("idus").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
 
-                            currentIDUs = (long) dataSnapshot.getValue();
                             connected = true;
-                            Snackbar.make(findViewById(R.id.understandButtonsLayout),
-                                    "Connected to server!", Snackbar.LENGTH_LONG).show();
+
+                            if (mainLayout != null) {
+                                Snackbar.make(mainLayout,
+                                        "Updated IDU values!", Snackbar.LENGTH_LONG).show();
+                            }
+
                             connectToClassroom.setEnabled(false);
                             connectToClassroom.setText(R.string.connectedToClass);
 
                         } else {
-                            Snackbar.make(findViewById(R.id.understandButtonsLayout),
-                                    "Enter the correct class ID first", Snackbar.LENGTH_SHORT).show();
+                            if (mainLayout != null) {
+                                Snackbar.make(mainLayout,
+                                        "Enter the correct class ID first",
+                                        Snackbar.LENGTH_SHORT).show();
+                            }
                         }
                     }
 
