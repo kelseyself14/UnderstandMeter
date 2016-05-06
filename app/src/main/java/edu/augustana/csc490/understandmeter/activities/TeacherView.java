@@ -2,6 +2,7 @@ package edu.augustana.csc490.understandmeter.activities;
 
 import android.content.Intent;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,15 @@ import com.firebase.client.ValueEventListener;
 
 import edu.augustana.csc490.understandmeter.R;
 import edu.augustana.csc490.understandmeter.utilities.SavedValues;
+import android.app.Activity;
+import android.graphics.DashPathEffect;
+import android.os.Bundle;
+import com.androidplot.util.PixelUtils;
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYSeries;
+import com.androidplot.xy.*;
+import java.util.Arrays;
+
 
 public class TeacherView extends AppCompatActivity {
 
@@ -30,6 +40,8 @@ public class TeacherView extends AppCompatActivity {
     private int classWarningThreshold = -1;
     private AlertDialog alert;
 
+    private XYPlot plot;
+    CountDownTimer timer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,9 +103,37 @@ public class TeacherView extends AppCompatActivity {
 
         Button endClass = (Button) findViewById(R.id.endClassButton);
         endClass.setOnClickListener(returnMainScreen);
+        // initialize our XYPlot reference:
+        timer = new CountDownTimer(20000, 1000) {
+            int postion = 0;
+            public void onTick(long millis) {
+                plot = (XYPlot) findViewById(R.id.plot);
+                // create a couple arrays of y-values to plot:
+                Number[] series1Numbers = {5};
+                int value =5;
+                series1Numbers[postion]=value;
+
+                // turn the above arrays into XYSeries':
+                // (Y_VALS_ONLY means use the element index as the x value)
+                XYSeries series1 = new SimpleXYSeries(Arrays.asList(series1Numbers),
+                        SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
+                LineAndPointFormatter series1Format = new LineAndPointFormatter();
+                series1Format.setPointLabelFormatter(new PointLabelFormatter());
+                // series1Format.configure(getApplicationContext(),
+                //R.xml.line_point_formatter_with_labels);
 
 
+                plot.addSeries(series1, series1Format);
+                postion++;
+            }
+            public void onFinish() {
+
+            }
+        };
     }
+
+
+
 
     private View.OnClickListener returnMainScreen = new View.OnClickListener() {
         @Override
