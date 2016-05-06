@@ -2,6 +2,7 @@ package edu.augustana.csc490.understandmeter.activities;
 
 import android.content.Intent;
 import android.os.Build;
+import android.support.v7.app.ActionBar;
 import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,18 +16,12 @@ import android.widget.Toast;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.MutableData;
+import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 
 import edu.augustana.csc490.understandmeter.R;
 import edu.augustana.csc490.understandmeter.utilities.SavedValues;
-import android.app.Activity;
-import android.graphics.DashPathEffect;
-import android.os.Bundle;
-import com.androidplot.util.PixelUtils;
-import com.androidplot.xy.SimpleXYSeries;
-import com.androidplot.xy.XYSeries;
-import com.androidplot.xy.*;
-import java.util.Arrays;
 
 
 public class TeacherView extends AppCompatActivity {
@@ -55,15 +50,17 @@ public class TeacherView extends AppCompatActivity {
 
         if (classIsActive && classId > -1 && classSize > -1 && classWarningThreshold > -1) {
             TextView classIdView = (TextView) findViewById(R.id.numberCounter);
-            classIdView.setText("" + classId);
+            String classIDStr = "" + classId;
 
-            final TextView showIDUs = (TextView) findViewById(R.id.showIDUs);
+            if (classIdView != null) {
+                classIdView.setText(classIDStr);
+            }
 
             Firebase.setAndroidContext(this);
             myFirebase = new Firebase(SavedValues.FIREBASE_URL)
                     .child("classrooms/" + classId);
 
-            myFirebase.child("IDUs").addValueEventListener(new ValueEventListener() {
+            myFirebase.child("idus").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
@@ -103,15 +100,6 @@ public class TeacherView extends AppCompatActivity {
 
         Button endClass = (Button) findViewById(R.id.endClassButton);
         endClass.setOnClickListener(returnMainScreen);
-        // initialize our XYPlot reference:
-        timer = new CountDownTimer(20000, 1000) {
-            int postion = 0;
-            public void onTick(long millis) {
-                plot = (XYPlot) findViewById(R.id.plot);
-                // create a couple arrays of y-values to plot:
-                Number[] series1Numbers = {5};
-                int value =5;
-                series1Numbers[postion]=value;
 
                 // turn the above arrays into XYSeries':
                 // (Y_VALS_ONLY means use the element index as the x value)
@@ -121,28 +109,20 @@ public class TeacherView extends AppCompatActivity {
                 series1Format.setPointLabelFormatter(new PointLabelFormatter());
                 // series1Format.configure(getApplicationContext(),
                 //R.xml.line_point_formatter_with_labels);
+        if (endClass != null) {
+            endClass.setOnClickListener(returnMainScreen);
+        }
 
-
-                plot.addSeries(series1, series1Format);
-                postion++;
-            }
-            public void onFinish() {
-
-            }
-        };
     }
-
-
-
 
     private View.OnClickListener returnMainScreen = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
 
-            if (myFirebase != null) {
-                myFirebase.removeValue();
-                classIsActive = false;
-            }
+//            if (myFirebase != null) {
+//                myFirebase.removeValue();
+//                classIsActive = false;
+//            }
 
             if (Build.VERSION.SDK_INT >= 16) {
                 onNavigateUp();

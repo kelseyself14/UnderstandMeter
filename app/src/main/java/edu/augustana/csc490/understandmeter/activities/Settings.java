@@ -3,6 +3,7 @@ package edu.augustana.csc490.understandmeter.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.MutableData;
+import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 
 import edu.augustana.csc490.understandmeter.R;
@@ -29,7 +32,7 @@ public class Settings extends AppCompatActivity {
     private static final String CLASS_SIG = "Settings";
 
     private EditText classNameEnter, maxStudentsEnter, warningPercentage;
-
+    private View mainLayout;
     private long nextUniqueId = -1;
     private Firebase myFirebase;
     private boolean showedInitialConnectionNotify = false;
@@ -37,7 +40,13 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actvity_class_settings);
-        getSupportActionBar().setTitle(R.string.settingsTitle);
+
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setTitle(R.string.settingsTitle);
+        }
+
+        mainLayout = findViewById(R.id.settingsLayout);
 
         // sets up firebase connection
         setUpFirebase();
@@ -48,7 +57,10 @@ public class Settings extends AppCompatActivity {
         warningPercentage = (EditText) findViewById(R.id.warningPercentage);
 
         Button createClass = (Button) findViewById(R.id.startClassButton);
-        createClass.setOnClickListener(startClass);
+
+        if (createClass != null) {
+            createClass.setOnClickListener(startClass);
+        }
     }
 
     private View.OnClickListener startClass = new View.OnClickListener() {
@@ -60,9 +72,12 @@ public class Settings extends AppCompatActivity {
 
             if (idForClassroom > -1) {
                 Log.d(CLASS_SIG, "Class successfully created.");
-                Snackbar.make(findViewById(R.id.settingsLayout),
-                        "Classroom with ID number " + idForClassroom + " was created successfully!",
-                        Snackbar.LENGTH_LONG).show();
+
+                if (mainLayout != null) {
+                    Snackbar.make(mainLayout,
+                            "Classroom with ID number " + idForClassroom + " was created successfully!",
+                            Snackbar.LENGTH_LONG).show();
+                }
 
                 Intent switchToTeacherV = new Intent(Settings.this, TeacherView.class);
                 switchToTeacherV.putExtra("classID", idForClassroom);
@@ -90,8 +105,12 @@ public class Settings extends AppCompatActivity {
                 Log.d(CLASS_SIG, "Next unique ID is: " + nextUniqueId);
 
                 if (!showedInitialConnectionNotify) {
-                    Snackbar.make(findViewById(R.id.settingsLayout), "Established connection to the" +
-                            " server!", Snackbar.LENGTH_LONG).show();
+
+                    if (mainLayout != null) {
+                        Snackbar.make(mainLayout, "Established connection to the server!",
+                                Snackbar.LENGTH_LONG).show();
+                    }
+
                     Log.d(CLASS_SIG, "made initial connection to server");
                     showedInitialConnectionNotify = true;
                 }
@@ -127,7 +146,22 @@ public class Settings extends AppCompatActivity {
 
 
             // increments the next unique Id in Firebase
-            myFirebase.child("nextUniqueId").setValue(nextUniqueId + 1);
+            myFirebase.child("nextUniqueId").runTransaction(new Transaction.Handler() {
+                @Override
+                public Transaction.Result doTransaction(MutableData mutableData) {
+                    mutableData.setValue((long) mutableData.getValue() + 1);
+                    return Transaction.success(mutableData);
+                }
+
+                @Override
+                public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                    if (b) {
+                        String toPrint = "Incremented the next unique ID";
+                        Toast.makeText(Settings.this, toPrint, Toast.LENGTH_LONG).show();
+                        Log.d(CLASS_SIG, toPrint);
+                    }
+                }
+            });
             // the next unique Id is automatically incremented by a callback from Firebase
 
             // creates classroom in Firebase
@@ -154,7 +188,9 @@ public class Settings extends AppCompatActivity {
                 errorString += "Please specify warning threshold.";
             }
 
-            Snackbar.make(findViewById(R.id.settingsLayout), errorString, Snackbar.LENGTH_LONG).show();
+            if (mainLayout != null) {
+                Snackbar.make(mainLayout, errorString, Snackbar.LENGTH_LONG).show();
+            }
             return -1;
         }
     }
