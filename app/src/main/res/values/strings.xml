@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UnderstandMeter</string>
+    <string name="app_name">HeyTeacher!</string>
 
     <!-- For the main activity -->
     <string name="heyTeacherTitle">Hey Teacher!</string>
@@ -14,25 +14,30 @@
         or I do not understand.</string>
 
     <!-- For the teacher view class -->
+    <string name="teacherTitle">Teacher View</string>
     <string name="logout">Log Out</string>
     <string name="studentLabel">Students: </string>
     <string name="teacherLabel">Teacher: </string>
     <string name="initializedNumberCount">-1</string>
-    <string name="classId">Tell the students to type in ID number:</string>
+    <string name="classId">Class ID Number:</string>
     <string name="endClass">End class</string>
     <string name="resetIDUs">Reset Student Counter</string>
     <string name="studentsNotifyTitle">Students message</string>
     <string name="studentsNotifyContent">The specified portion of students do not understand
-        the topic.</string>
-    <string name="currentIDUsTitle">Currently, there are this many notifications from students who
-        do not understand.</string>
+        the topic, you suck ass a teacher.</string>
+    <string name="currentIDUsTitle">This many students do not understand</string>
 
     <!-- For the UnderstandButtons activity -->
+    <string name="studentTitle">Student View</string>
     <string name="countdownTitle">You can press the button to start</string>
     <string name="countdownRepeat">You can press again</string>
     <string name="understand">I Understand!</string>
     <string name="notUnderstand">I Do Not Understand!</string>
     <string name="classIdEnter">Enter the Class ID here</string>
     <string name="connectToClass">Connect to classroom</string>
+    <string name="connectedToClass">Connected!</string>
+
+    <!-- For the settings activity -->
+    <string name="settingsTitle">Class Setup</string>
 
 </resources>

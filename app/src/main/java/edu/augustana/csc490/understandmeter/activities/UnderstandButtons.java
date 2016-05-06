@@ -25,6 +25,7 @@ public class UnderstandButtons extends AppCompatActivity {
     private boolean connected = false;
     private EditText classIDEditText;
     private Button notUnderstandButton;
+    private Button connectToClassroom;
     private CountDownTimer timer;
     private long currentIDUs = -1;
     private Firebase myFirebase;
@@ -34,6 +35,7 @@ public class UnderstandButtons extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_understand_buttons);
         Firebase.setAndroidContext(this);
+        getSupportActionBar().setTitle(R.string.studentTitle);
 
         classIDEditText = (EditText) findViewById(R.id.classIdEnter);
 
@@ -43,7 +45,7 @@ public class UnderstandButtons extends AppCompatActivity {
         Button logOut = (Button) findViewById(R.id.logOut);
         logOut.setOnClickListener(returnMain);
 
-        Button connectToClassroom = (Button) findViewById(R.id.connectToClass);
+        connectToClassroom = (Button) findViewById(R.id.connectToClass);
         connectToClassroom.setOnClickListener(connectToClassroomListener);
 
         countDownText = (TextView) findViewById(R.id.mCountDown);
@@ -57,6 +59,13 @@ public class UnderstandButtons extends AppCompatActivity {
                 notUnderstandButton.setEnabled(true);
                 notUnderstandButton.setClickable(true);
                 countDownText.setText("Press again");
+                myFirebase.child("IDUs").setValue(currentIDUs - 1);
+
+                if (Build.VERSION.SDK_INT >= 23) {
+                    notUnderstandButton.setBackgroundColor(getColor(R.color.red));
+                } else {
+                    notUnderstandButton.setBackgroundColor(getResources().getColor(R.color.red));
+                }
             }
         };
     }
@@ -81,6 +90,13 @@ public class UnderstandButtons extends AppCompatActivity {
             if (connected) { // indicating a connection was made
                 notUnderstandButton.setClickable(false);
                 notUnderstandButton.setEnabled(false);
+
+                if (Build.VERSION.SDK_INT >= 23) {
+                    notUnderstandButton.setBackgroundColor(getColor(R.color.grey));
+                } else {
+                    notUnderstandButton.setBackgroundColor(getResources().getColor(R.color.grey));
+                }
+
                 Toast.makeText(UnderstandButtons.this, "Anonymously submitted", Toast.LENGTH_LONG).show();
 
                 myFirebase.child("IDUs").setValue(currentIDUs + 1);
@@ -106,10 +122,14 @@ public class UnderstandButtons extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
+
                             currentIDUs = (long) dataSnapshot.getValue();
                             connected = true;
                             Snackbar.make(findViewById(R.id.understandButtonsLayout),
                                     "Connected to server!", Snackbar.LENGTH_LONG).show();
+                            connectToClassroom.setEnabled(false);
+                            connectToClassroom.setText(R.string.connectedToClass);
+
                         } else {
                             Snackbar.make(findViewById(R.id.understandButtonsLayout),
                                     "Enter the correct class ID first", Snackbar.LENGTH_SHORT).show();

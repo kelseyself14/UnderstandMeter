@@ -16,7 +16,7 @@
         android:layout_alignTop="@+id/numberCounter"
         android:layout_centerHorizontal="true"
         android:text="@string/classId"
-        android:textSize="15sp" />
+        android:textSize="25sp" />
 
     <TextView
         android:id="@+id/numberCounter"
@@ -29,7 +29,8 @@
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="80sp"
-        tools:ignore="UnusedAttribute" />
+        tools:ignore="UnusedAttribute"
+        android:padding="15dip"/>
 
     <TextView
         android:id="@+id/showIDUsTitle"
@@ -40,7 +41,8 @@
         android:paddingTop="50dip"
         android:text="@string/currentIDUsTitle"
         android:textAlignment="center"
-        tools:ignore="UnusedAttribute" />
+        tools:ignore="UnusedAttribute"
+        android:textSize="25sp"/>
 
     <TextView
         android:id="@+id/showIDUs"
@@ -50,7 +52,7 @@
         android:layout_centerHorizontal="true"
         android:text="@string/initializedNumberCount"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="25sp" />
+        android:textSize="50sp" />
 
     <Button
         android:id="@+id/resetIDUCounter"
@@ -60,7 +62,8 @@
         android:layout_centerHorizontal="true"
         android:background="@color/blue"
         android:text="@string/resetIDUs"
-        android:layout_marginBottom="15dip"/>
+        android:layout_marginBottom="15dip"
+        android:padding="15dip"/>
 
     <Button
         android:id="@+id/endClassButton"

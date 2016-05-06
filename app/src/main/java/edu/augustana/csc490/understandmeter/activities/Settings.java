@@ -37,7 +37,7 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actvity_class_settings);
-        Intent intent = getIntent();
+        getSupportActionBar().setTitle(R.string.settingsTitle);
 
         // sets up firebase connection
         setUpFirebase();

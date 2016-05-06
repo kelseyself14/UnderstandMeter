@@ -34,6 +34,7 @@ public class TeacherView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_view);
+        getSupportActionBar().setTitle(R.string.teacherTitle);
 
         Intent intent = getIntent();
         long classId = intent.getLongExtra("classID", -1);
@@ -53,21 +54,23 @@ public class TeacherView extends AppCompatActivity {
             myFirebase.child("IDUs").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    IDUs = (long) dataSnapshot.getValue();
-                    Log.d(CLASS_SIG, "IDUs updated to " + IDUs);
-                    showIDUs.setText("" + IDUs);
+                    if (dataSnapshot.exists()) {
+                        IDUs = (long) dataSnapshot.getValue();
+                        Log.d(CLASS_SIG, "IDUs updated to " + IDUs);
+                        showIDUs.setText("" + IDUs);
 
-                    if (IDUs >= classWarningThreshold) {
-                        if (alert != null) {
-                            alert.dismiss();
+                        if (IDUs >= classWarningThreshold) {
+                            if (alert != null) {
+                                alert.dismiss();
+                            }
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(TeacherView.this);
+                            builder.setTitle(R.string.studentsNotifyTitle);
+                            builder.setMessage(R.string.studentsNotifyContent);
+                            builder.setCancelable(true);
+                            alert = builder.create();
+                            alert.show();
                         }
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(TeacherView.this);
-                        builder.setTitle(R.string.studentsNotifyTitle);
-                        builder.setMessage(R.string.studentsNotifyContent);
-                        builder.setCancelable(true);
-                        alert = builder.create();
-                        alert.show();
                     }
                 }
 
