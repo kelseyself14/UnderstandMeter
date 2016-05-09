@@ -29,6 +29,7 @@ import com.firebase.client.ValueEventListener;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.List;
 
 import edu.augustana.csc490.understandmeter.R;
 import edu.augustana.csc490.understandmeter.utilities.SavedValues;
@@ -137,43 +138,7 @@ public class TeacherView extends AppCompatActivity {
                 });
             }
         }
-       /* XYPlot plot = (XYPlot) findViewById(R.id.plot);
-        Number[] series1Numbers = {1, 4, 2, 8, 4, 16, 8, 32, 16, 64};
-        XYSeries series1 = new SimpleXYSeries(Arrays.asList(series1Numbers),
-                SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
-        LineAndPointFormatter series1Format = new LineAndPointFormatter();
-        series1Format.setPointLabelFormatter(new PointLabelFormatter());
-        plot.addSeries(series1, series1Format);*/
-
-        timer = new CountDownTimer(20000, 1000) {
-            //http://androidplot.com/docs/dynamically-plotting-sensor-data/
-            int position = 0;
-            XYPlot plot = (XYPlot) findViewById(R.id.plot);
-            SimpleXYSeries IDUSeries=new SimpleXYSeries("IDUs");
-            public void onTick(long millis) {
-                //Number[] temp = new Number[position+1];
-                Number[] series1Numbers = {5};
-                IDUSeries.setModel(Arrays.asList(series1Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY);
-                IDUSeries.useImplicitXVals();
-                plot.addSeries(IDUSeries, new LineAndPointFormatter());
-                /*for(int i=0; i<=position;i++){
-                    temp[i]=series1Numbers[i];
-                }
-                int value = 5;
-                temp[position] = value;
-                series1Numbers=temp;
-                XYSeries series1 = new SimpleXYSeries(Arrays.asList(series1Numbers),
-                        SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");*/
-                //LineAndPointFormatter series1Format = new LineAndPointFormatter();
-                // series1Format.setPointLabelFormatter(new PointLabelFormatter());
-                // plot.addSeries(IDUSeries, series1Format);
-                plot.redraw();
-            }
-
-            public void onFinish() {
-
-            }
-
+        XYPlot plot = (XYPlot) findViewById(R.id.plot);
         };
         Button endClass = (Button) findViewById(R.id.endClassButton);
 
@@ -199,4 +164,4 @@ public class TeacherView extends AppCompatActivity {
             }
         };
     }
-}
+
