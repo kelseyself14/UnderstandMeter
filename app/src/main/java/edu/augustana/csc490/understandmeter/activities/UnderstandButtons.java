@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +31,7 @@ public class UnderstandButtons extends AppCompatActivity {
     private static final String CLASS_SIG = "UnderstandButtons";
 
     private boolean connected = false;
+    private boolean submitted = false;
     private AlertDialog prompt;
     private View mainLayout;
     private EditText classIDEditText;
@@ -50,6 +52,7 @@ public class UnderstandButtons extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setTitle(R.string.studentTitle);
+            ab.setDisplayHomeAsUpEnabled(true);
         }
 
         mainLayout = findViewById(R.id.understandButtonsLayout);
@@ -126,23 +129,9 @@ public class UnderstandButtons extends AppCompatActivity {
 
                 Toast.makeText(UnderstandButtons.this, "Anonymously submitted", Toast.LENGTH_LONG).show();
 
-                myFirebase.child("idus").runTransaction(new Transaction.Handler() {
-                    @Override
-                    public Transaction.Result doTransaction(MutableData mutableData) {
-                        mutableData.setValue((long) mutableData.getValue() + 1);
-                        return Transaction.success(mutableData);
-                    }
-
-                    @Override
-                    public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
-                        if (b) {
-                            String toPrint = "Success in increment operation";
-//                            Toast.makeText(UnderstandButtons.this, toPrint, Toast.LENGTH_SHORT).show();
-                            Log.d(CLASS_SIG, toPrint);
-                        }
-                    }
-                });
-                // the currentIDUs value will be updated via the callback from the server
+                if (!submitted) {
+                    incrementIDUs();
+                }
 
                 timer.start();
             } else {
@@ -232,24 +221,10 @@ public class UnderstandButtons extends AppCompatActivity {
                                     notUnderstandButton.setEnabled(true);
                                     notUnderstandButton.setClickable(true);
                                     countDownText.setText(R.string.pressAgain);
-                                    myFirebase.child("idus").runTransaction(new Transaction.Handler() {
-                                        @Override
-                                        public Transaction.Result doTransaction(MutableData mutableData) {
-                                            if (!((long) mutableData.getValue() <= 0)) {
-                                                mutableData.setValue((long) mutableData.getValue() - 1);
-                                            }
-                                            return Transaction.success(mutableData);
-                                        }
 
-                                        @Override
-                                        public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
-                                            if (b) {
-                                                String toPrint = "Success in decrement operation";
-//                            Toast.makeText(UnderstandButtons.this, toPrint, Toast.LENGTH_SHORT).show();
-                                                Log.d(CLASS_SIG, toPrint);
-                                            }
-                                        }
-                                    });
+                                    if (submitted) {
+                                        decrementIDUs();
+                                    }
 
                                     if (Build.VERSION.SDK_INT >= 23) {
                                         notUnderstandButton.setBackgroundColor(getColor(R.color.red));
@@ -271,11 +246,90 @@ public class UnderstandButtons extends AppCompatActivity {
         }
     };
 
+    @Override
+    public void onBackPressed() {
+
+        if (submitted) {
+            decrementIDUs();
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onNavigateUp() {
+
+        if (submitted) {
+            decrementIDUs();
+        }
+
+        return super.onNavigateUp();
+    }
+
     private void goBack() {
         if (Build.VERSION.SDK_INT >= 16) {
             onNavigateUp();
         } else {
             onBackPressed();
         }
+    }
+
+    /*
+    This will cause the IDUs on the server to increase by 1.
+     */
+    private void incrementIDUs() {
+        myFirebase.child("idus").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                mutableData.setValue((long) mutableData.getValue() + 1);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                submitted = b;
+                if (b) {
+                    String toPrint = "Success in increment operation";
+//                            Toast.makeText(UnderstandButtons.this, toPrint, Toast.LENGTH_SHORT).show();
+                    Log.d(CLASS_SIG, toPrint);
+                }
+            }
+        });
+    }
+
+    /*
+     * This will cause the IDUs on the server to go down.
+     */
+    private void decrementIDUs() {
+        myFirebase.child("idus").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if (!((long) mutableData.getValue() <= 0)) {
+                    mutableData.setValue((long) mutableData.getValue() - 1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                submitted = !b;
+                if (b) {
+                    String toPrint = "Success in decrement operation";
+//                            Toast.makeText(UnderstandButtons.this, toPrint, Toast.LENGTH_SHORT).show();
+                    Log.d(CLASS_SIG, toPrint);
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            if (submitted) {
+                decrementIDUs();
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
