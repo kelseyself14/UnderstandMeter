@@ -28,11 +28,13 @@ import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import edu.augustana.csc490.understandmeter.R;
 import edu.augustana.csc490.understandmeter.utilities.SavedValues;
+import edu.augustana.csc490.understandmeter.utilities.ScrollableSeries;
 
 public class TeacherView extends AppCompatActivity {
 
@@ -45,7 +47,9 @@ public class TeacherView extends AppCompatActivity {
     private int classWarningThreshold = -1;
     private AlertDialog alert;
     private CountDownTimer timer;
-    Number[] series1Numbers;
+    private XYPlot plot;
+    private final Number[] series1Numbers = {5};
+    private final ScrollableSeries series1= new ScrollableSeries(Arrays.asList(series1Numbers), 0, "Series1");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,11 +148,20 @@ public class TeacherView extends AppCompatActivity {
                 endClass.setOnClickListener(returnMainScreen);
             }
         }
-        XYPlot plot = (XYPlot) findViewById(R.id.plot);
-    }
+        plot= (XYPlot) findViewById(R.id.plot);
+        LineAndPointFormatter series1Format = new LineAndPointFormatter();
+        plot.addSeries(series1, series1Format);
+        timer = new CountDownTimer(3000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                series1.add(10);
+                plot.redraw();
+            }
 
-    ;
+            public void onFinish() {
+            }
+        };
 
+    };
 
     View.OnClickListener returnMainScreen = new View.OnClickListener() {
         @Override
