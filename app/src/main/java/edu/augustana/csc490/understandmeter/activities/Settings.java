@@ -148,33 +148,40 @@ public class Settings extends AppCompatActivity {
             String className = classNameEnter.getText().toString();
             long idForClassroom = nextUniqueId;
 
-
-            // increments the next unique Id in Firebase
-            myFirebase.child("nextUniqueId").runTransaction(new Transaction.Handler() {
-                @Override
-                public Transaction.Result doTransaction(MutableData mutableData) {
-                    mutableData.setValue((long) mutableData.getValue() + 1);
-                    return Transaction.success(mutableData);
-                }
-
-                @Override
-                public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
-                    if (b) {
-                        String toPrint = "Incremented the next unique ID";
-                        Toast.makeText(Settings.this, toPrint, Toast.LENGTH_LONG).show();
-                        Log.d(CLASS_SIG, toPrint);
+            if (maxStudents >= warningThreshold) {
+                // increments the next unique Id in Firebase
+                myFirebase.child("nextUniqueId").runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData mutableData) {
+                        mutableData.setValue((long) mutableData.getValue() + 1);
+                        return Transaction.success(mutableData);
                     }
-                }
-            });
-            // the next unique Id is automatically incremented by a callback from Firebase
 
-            // creates classroom in Firebase
-            Classroom room = new Classroom(warningThreshold, maxStudents, className, msTimeoutValue); // sets the amount of IDUs and the threshold
-            Firebase pathToClassroom = referenceToUsers.child("/" + nextUniqueId + "/");
-            pathToClassroom.setValue(room);
+                    @Override
+                    public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                        if (b) {
+                            String toPrint = "Incremented the next unique ID";
+                            Toast.makeText(Settings.this, toPrint, Toast.LENGTH_LONG).show();
+                            Log.d(CLASS_SIG, toPrint);
+                        }
+                    }
+                });
 
 
-            return idForClassroom;
+                // the next unique Id is automatically incremented by a callback from Firebase
+
+                // creates classroom in Firebase
+                Classroom room = new Classroom(warningThreshold, maxStudents, className, msTimeoutValue); // sets the amount of IDUs and the threshold
+                Firebase pathToClassroom = referenceToUsers.child("/" + nextUniqueId + "/");
+                pathToClassroom.setValue(room);
+
+
+                return idForClassroom;
+            } else {
+                Log.e(CLASS_SIG, "Tried to create a classroom with a higher warning threshold than students.");
+                Snackbar.make(mainLayout, "Class size has to be greater than warning threshold.", Snackbar.LENGTH_LONG).show();
+                return -1;
+            }
         } else { // examine all errors
             String errorString = "";
 
