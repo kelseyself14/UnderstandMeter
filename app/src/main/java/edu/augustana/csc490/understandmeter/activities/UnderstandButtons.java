@@ -1,9 +1,11 @@
 package edu.augustana.csc490.understandmeter.activities;
 
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,11 +30,12 @@ public class UnderstandButtons extends AppCompatActivity {
     private static final String CLASS_SIG = "UnderstandButtons";
 
     private boolean connected = false;
-
+    private AlertDialog prompt;
     private View mainLayout;
     private EditText classIDEditText;
     private TextView countDownText;
-    private Button notUnderstandButton, connectToClassroom;
+    private Button notUnderstandButton, connectToClassroom, logOut;
+    private long secondsToTimeout = 20;
 
     private CountDownTimer timer;
     private Firebase myFirebase;
@@ -59,10 +62,11 @@ public class UnderstandButtons extends AppCompatActivity {
             notUnderstandButton.setOnClickListener(displayNotUnderstand);
         }
 
-        Button logOut = (Button) findViewById(R.id.logOut);
+        logOut = (Button) findViewById(R.id.logOut);
 
         if (logOut != null) {
             logOut.setOnClickListener(returnMain);
+            logOut.setEnabled(false);
         }
 
         connectToClassroom = (Button) findViewById(R.id.connectToClass);
@@ -72,54 +76,36 @@ public class UnderstandButtons extends AppCompatActivity {
         }
 
         countDownText = (TextView) findViewById(R.id.mCountDown);
-        timer = new CountDownTimer(20000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                String toShow = "Seconds Remaining: " + millisUntilFinished / 1000;
-                countDownText.setText(toShow);
-            }
-
-            public void onFinish() {
-                notUnderstandButton.setEnabled(true);
-                notUnderstandButton.setClickable(true);
-                countDownText.setText(R.string.pressAgain);
-                myFirebase.child("idus").runTransaction(new Transaction.Handler() {
-                    @Override
-                    public Transaction.Result doTransaction(MutableData mutableData) {
-                        mutableData.setValue((long) mutableData.getValue() - 1);
-                        return Transaction.success(mutableData);
-                    }
-
-                    @Override
-                    public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
-                        if (b) {
-                            String toPrint = "Success in decrementing!";
-                            Toast.makeText(UnderstandButtons.this, toPrint, Toast.LENGTH_SHORT).show();
-                            Log.d(CLASS_SIG, toPrint);
-                        }
-                    }
-                });
-
-                if (Build.VERSION.SDK_INT >= 23) {
-                    notUnderstandButton.setBackgroundColor(getColor(R.color.red));
-                } else {
-                    //noinspection deprecation
-                    notUnderstandButton.setBackgroundColor(getResources().getColor(R.color.red));
-                }
-            }
-        };
     }
 
     private View.OnClickListener returnMain = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Toast.makeText(UnderstandButtons.this, "Returning to Main Menu", Toast.LENGTH_SHORT).show();
 
-            if (Build.VERSION.SDK_INT >= 16) {
-                onNavigateUp();
-            } else {
-                onBackPressed();
-            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(UnderstandButtons.this);
+
+            builder.setTitle("Are you sure?");
+            builder.setMessage("You will be leaving this class.");
+            builder.setPositiveButton("Yes, log me out.", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    goBack();
+                }
+            });
+
+            builder.setNegativeButton("Nah, I\'ll stay here", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if (prompt != null) {
+                        prompt.dismiss();
+                    }
+                }
+            });
+
+            prompt = builder.create();
+            prompt.show();
+
+
         }
     };
 
@@ -150,7 +136,9 @@ public class UnderstandButtons extends AppCompatActivity {
                     @Override
                     public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
                         if (b) {
-                            Toast.makeText(UnderstandButtons.this, "Success in incrementing!", Toast.LENGTH_SHORT).show();
+                            String toPrint = "Success in increment operation";
+//                            Toast.makeText(UnderstandButtons.this, toPrint, Toast.LENGTH_SHORT).show();
+                            Log.d(CLASS_SIG, toPrint);
                         }
                     }
                 });
@@ -181,13 +169,17 @@ public class UnderstandButtons extends AppCompatActivity {
 
                             connected = true;
 
-                            if (mainLayout != null) {
-                                Snackbar.make(mainLayout,
-                                        "Updated IDU values!", Snackbar.LENGTH_LONG).show();
-                            }
+//                            IDUs = (long) dataSnapshot.getValue();
+
+//                            if (mainLayout != null) {
+//                                Snackbar.make(mainLayout,
+//                                        "Updated IDU values!", Snackbar.LENGTH_LONG).show();
+//                            }
 
                             connectToClassroom.setEnabled(false);
                             connectToClassroom.setText(R.string.connectedToClass);
+
+                            logOut.setEnabled(true);
 
                         } else {
                             if (mainLayout != null) {
@@ -203,7 +195,87 @@ public class UnderstandButtons extends AppCompatActivity {
 
                     }
                 });
+
+                myFirebase.child("reset").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            boolean isReset = (boolean) dataSnapshot.getValue();
+                            if (isReset) {
+                                Toast.makeText(UnderstandButtons.this, "The class has ended.", Toast.LENGTH_LONG).show();
+                                goBack();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+
+                myFirebase.child("msToReset").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            secondsToTimeout = (long) dataSnapshot.getValue();
+                            Toast.makeText(UnderstandButtons.this, "Timeout is set to " + secondsToTimeout + " seconds.", Toast.LENGTH_SHORT).show();
+
+                            timer = new CountDownTimer((secondsToTimeout * 1000), 1000) {
+
+                                public void onTick(long millisUntilFinished) {
+                                    String toShow = "Seconds Remaining: " + millisUntilFinished / 1000;
+                                    countDownText.setText(toShow);
+                                }
+
+                                public void onFinish() {
+                                    notUnderstandButton.setEnabled(true);
+                                    notUnderstandButton.setClickable(true);
+                                    countDownText.setText(R.string.pressAgain);
+                                    myFirebase.child("idus").runTransaction(new Transaction.Handler() {
+                                        @Override
+                                        public Transaction.Result doTransaction(MutableData mutableData) {
+                                            if (!((long) mutableData.getValue() <= 0)) {
+                                                mutableData.setValue((long) mutableData.getValue() - 1);
+                                            }
+                                            return Transaction.success(mutableData);
+                                        }
+
+                                        @Override
+                                        public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                                            if (b) {
+                                                String toPrint = "Success in decrement operation";
+//                            Toast.makeText(UnderstandButtons.this, toPrint, Toast.LENGTH_SHORT).show();
+                                                Log.d(CLASS_SIG, toPrint);
+                                            }
+                                        }
+                                    });
+
+                                    if (Build.VERSION.SDK_INT >= 23) {
+                                        notUnderstandButton.setBackgroundColor(getColor(R.color.red));
+                                    } else {
+                                        //noinspection deprecation
+                                        notUnderstandButton.setBackgroundColor(getResources().getColor(R.color.red));
+                                    }
+                                }
+                            };
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
             }
         }
     };
+
+    private void goBack() {
+        if (Build.VERSION.SDK_INT >= 16) {
+            onNavigateUp();
+        } else {
+            onBackPressed();
+        }
+    }
 }
