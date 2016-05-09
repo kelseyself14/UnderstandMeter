@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ap="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/office2"
@@ -10,67 +11,115 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activities.TeacherView">
 
+    <com.androidplot.xy.XYPlot
+        android:id="@+id/plot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ap:label="IDU over Time"
+        ap:rangeLabel="IDU"
+        ap:domainLabel="Time Units"
+        ap:borderColor="#000000"
+        ap:backgroundColor="#000000"
+        ap:graphBackgroundColor="#000000"
+        ap:gridBackgroundColor="#111111"
+        ap:gridPaddingLeft="20dp"
+        ap:gridPaddingRight="20dp"
+        ap:gridPaddingTop="20dp"
+        ap:gridPaddingBottom="20dp"
+        ap:labelTextSize="20sp"
+        ap:rangeLabelTextSize="13sp"
+        ap:domainLabelTextSize="13sp"
+        ap:graphMarginTop="20dp"
+        ap:graphMarginBottom="40dp"
+        ap:graphMarginLeft="15dp"
+        ap:graphMarginRight="10dp"
+        ap:graphDomainLineColor="#444444"
+        ap:graphDomainLineThickness="1dp"
+        ap:graphRangeLineColor="#444444"
+        ap:graphRangeLineThickness="1dp"
+        ap:rangeTickLabelTextSize="15sp"
+        ap:rangeOriginTickLabelTextSize="15sp"
+        ap:domainTickLabelTextSize="15sp"
+        ap:domainOriginTickLabelTextSize="15sp"
+        ap:legendTextSize="15sp"
+        ap:legendIconHeight="15dp"
+        ap:legendIconWidth="15dp"
+        ap:legendHeight="25dp"
+        ap:legendAnchorPosition="right_bottom"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/numberCounter"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/numberCounter"
-        android:layout_centerHorizontal="true"
         android:text="@string/classId"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        android:id="@+id/textView5"
+        android:layout_above="@+id/resetIDUCounter"
+        android:layout_alignRight="@+id/resetIDUCounter"
+        android:layout_alignEnd="@+id/resetIDUCounter" />
 
     <TextView
         android:id="@+id/numberCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:paddingTop="10dip"
         android:text="@string/initializedNumberCount"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="80sp"
         tools:ignore="UnusedAttribute"
-        android:padding="15dip"/>
+        android:padding="15dip"
+        android:layout_above="@+id/resetIDUCounter"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:id="@+id/showIDUsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/numberCounter"
-        android:layout_centerHorizontal="true"
         android:paddingTop="50dip"
         android:text="@string/currentIDUsTitle"
-        android:textAlignment="center"
         tools:ignore="UnusedAttribute"
-        android:textSize="25sp"/>
+        android:textSize="15sp"
+        android:layout_above="@+id/textView5"
+        android:layout_toLeftOf="@+id/showIDUs"
+        android:layout_toStartOf="@+id/showIDUs" />
 
     <TextView
         android:id="@+id/showIDUs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/showIDUsTitle"
-        android:layout_centerHorizontal="true"
         android:text="@string/initializedNumberCount"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="50sp" />
+        android:textSize="50sp"
+        android:layout_alignTop="@+id/showIDUsTitle"
+        android:layout_alignLeft="@+id/endClassButton"
+        android:layout_alignStart="@+id/endClassButton"
+        android:layout_alignBottom="@+id/showIDUsTitle"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:id="@+id/resetIDUCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/endClassButton"
-        android:layout_centerHorizontal="true"
         android:background="@color/blue"
         android:text="@string/resetIDUs"
-        android:layout_marginBottom="15dip"
-        android:padding="15dip"/>
+        android:padding="15dip"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:id="@+id/endClassButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:background="@color/red"
-        android:text="@string/endClass" />
+        android:text="@string/endClass"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false" />
 </RelativeLayout>
