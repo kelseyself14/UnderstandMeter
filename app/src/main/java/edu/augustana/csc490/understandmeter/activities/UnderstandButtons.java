@@ -1,7 +1,6 @@
 package edu.augustana.csc490.understandmeter.activities;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.design.widget.Snackbar;
@@ -31,12 +30,12 @@ public class UnderstandButtons extends AppCompatActivity {
     private static final String CLASS_SIG = "UnderstandButtons";
 
     private boolean connected = false;
-    private long IDUs;
     private AlertDialog prompt;
     private View mainLayout;
     private EditText classIDEditText;
     private TextView countDownText;
     private Button notUnderstandButton, connectToClassroom, logOut;
+    private long secondsToTimeout = 20;
 
     private CountDownTimer timer;
     private Firebase myFirebase;
@@ -77,44 +76,6 @@ public class UnderstandButtons extends AppCompatActivity {
         }
 
         countDownText = (TextView) findViewById(R.id.mCountDown);
-        timer = new CountDownTimer(20000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                String toShow = "Seconds Remaining: " + millisUntilFinished / 1000;
-                countDownText.setText(toShow);
-            }
-
-            public void onFinish() {
-                notUnderstandButton.setEnabled(true);
-                notUnderstandButton.setClickable(true);
-                countDownText.setText(R.string.pressAgain);
-                myFirebase.child("idus").runTransaction(new Transaction.Handler() {
-                    @Override
-                    public Transaction.Result doTransaction(MutableData mutableData) {
-                        if (!((long) mutableData.getValue() <= 0)) {
-                            mutableData.setValue((long) mutableData.getValue() - 1);
-                        }
-                        return Transaction.success(mutableData);
-                    }
-
-                    @Override
-                    public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
-                        if (b) {
-                            String toPrint = "Success in decrement operation";
-//                            Toast.makeText(UnderstandButtons.this, toPrint, Toast.LENGTH_SHORT).show();
-                            Log.d(CLASS_SIG, toPrint);
-                        }
-                    }
-                });
-
-                if (Build.VERSION.SDK_INT >= 23) {
-                    notUnderstandButton.setBackgroundColor(getColor(R.color.red));
-                } else {
-                    //noinspection deprecation
-                    notUnderstandButton.setBackgroundColor(getResources().getColor(R.color.red));
-                }
-            }
-        };
     }
 
     private View.OnClickListener returnMain = new View.OnClickListener() {
@@ -128,11 +89,7 @@ public class UnderstandButtons extends AppCompatActivity {
             builder.setPositiveButton("Yes, log me out.", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    if (Build.VERSION.SDK_INT >= 16) {
-                        onNavigateUp();
-                    } else {
-                        onBackPressed();
-                    }
+                    goBack();
                 }
             });
 
@@ -212,7 +169,7 @@ public class UnderstandButtons extends AppCompatActivity {
 
                             connected = true;
 
-                            IDUs = (long) dataSnapshot.getValue();
+//                            IDUs = (long) dataSnapshot.getValue();
 
 //                            if (mainLayout != null) {
 //                                Snackbar.make(mainLayout,
@@ -238,7 +195,87 @@ public class UnderstandButtons extends AppCompatActivity {
 
                     }
                 });
+
+                myFirebase.child("reset").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            boolean isReset = (boolean) dataSnapshot.getValue();
+                            if (isReset) {
+                                Toast.makeText(UnderstandButtons.this, "The class has ended.", Toast.LENGTH_LONG).show();
+                                goBack();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+
+                myFirebase.child("msToReset").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            secondsToTimeout = (long) dataSnapshot.getValue();
+                            Toast.makeText(UnderstandButtons.this, "Timeout is set to " + secondsToTimeout + " seconds.", Toast.LENGTH_SHORT).show();
+
+                            timer = new CountDownTimer((secondsToTimeout * 1000), 1000) {
+
+                                public void onTick(long millisUntilFinished) {
+                                    String toShow = "Seconds Remaining: " + millisUntilFinished / 1000;
+                                    countDownText.setText(toShow);
+                                }
+
+                                public void onFinish() {
+                                    notUnderstandButton.setEnabled(true);
+                                    notUnderstandButton.setClickable(true);
+                                    countDownText.setText(R.string.pressAgain);
+                                    myFirebase.child("idus").runTransaction(new Transaction.Handler() {
+                                        @Override
+                                        public Transaction.Result doTransaction(MutableData mutableData) {
+                                            if (!((long) mutableData.getValue() <= 0)) {
+                                                mutableData.setValue((long) mutableData.getValue() - 1);
+                                            }
+                                            return Transaction.success(mutableData);
+                                        }
+
+                                        @Override
+                                        public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                                            if (b) {
+                                                String toPrint = "Success in decrement operation";
+//                            Toast.makeText(UnderstandButtons.this, toPrint, Toast.LENGTH_SHORT).show();
+                                                Log.d(CLASS_SIG, toPrint);
+                                            }
+                                        }
+                                    });
+
+                                    if (Build.VERSION.SDK_INT >= 23) {
+                                        notUnderstandButton.setBackgroundColor(getColor(R.color.red));
+                                    } else {
+                                        //noinspection deprecation
+                                        notUnderstandButton.setBackgroundColor(getResources().getColor(R.color.red));
+                                    }
+                                }
+                            };
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
             }
         }
     };
+
+    private void goBack() {
+        if (Build.VERSION.SDK_INT >= 16) {
+            onNavigateUp();
+        } else {
+            onBackPressed();
+        }
+    }
 }

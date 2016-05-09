@@ -137,31 +137,50 @@ public class TeacherView extends AppCompatActivity {
                     }
                 });
             }
+
+            Button endClass = (Button) findViewById(R.id.endClassButton);
+
+            if (endClass != null) {
+                endClass.setOnClickListener(returnMainScreen);
+            }
         }
         XYPlot plot = (XYPlot) findViewById(R.id.plot);
-        };
-        Button endClass = (Button) findViewById(R.id.endClassButton);
-
-        //if (endClass != null) {
-        // endClass.setOnClickListener(returnMainScreen);
-        //   }
-
-        View.OnClickListener returnMainScreen = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-//            if (myFirebase != null) {
-//                myFirebase.removeValue();
-//                classIsActive = false;
-//            }
-
-                if (Build.VERSION.SDK_INT >= 16) {
-                    onNavigateUp();
-                } else {
-                    onBackPressed();
-                }
-
-            }
-        };
     }
+
+    ;
+
+
+    View.OnClickListener returnMainScreen = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            if (myFirebase != null) {
+                myFirebase.removeValue();
+                myFirebase.child("reset").runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData mutableData) {
+                        mutableData.setValue(true);
+                        return Transaction.success(mutableData);
+                    }
+
+                    @Override
+                    public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                        if (b) {
+                            String toPrint = "Reset the class";
+                            Log.d(CLASS_SIG, toPrint);
+                            Toast.makeText(TeacherView.this, toPrint, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
+
+            if (Build.VERSION.SDK_INT >= 16) {
+                onNavigateUp();
+            } else {
+                onBackPressed();
+            }
+
+        }
+    };
+}
 

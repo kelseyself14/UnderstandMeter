@@ -40,5 +40,10 @@
 
     <!-- For the settings activity -->
     <string name="settingsTitle">Class Setup</string>
+    <string name="enterClassName">Enter Class Name</string>
+    <string name="enterNumStudents">Enter Number of Students</string>
+    <string name="enterWarningThreshold">Enter Warning Threshold</string>
+    <string name="secondsToSubmitRequest">Enter button timeout</string>
+    <string name="startClass">Start Class</string>
 
 </resources>

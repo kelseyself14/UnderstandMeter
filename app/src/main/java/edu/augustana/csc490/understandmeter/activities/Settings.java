@@ -31,7 +31,7 @@ public class Settings extends AppCompatActivity {
 
     private static final String CLASS_SIG = "Settings";
 
-    private EditText classNameEnter, maxStudentsEnter, warningPercentage;
+    private EditText classNameEnter, maxStudentsEnter, warningPercentage, msTimeout;
     private View mainLayout;
     private long nextUniqueId = -1;
     private Firebase myFirebase;
@@ -55,6 +55,7 @@ public class Settings extends AppCompatActivity {
         classNameEnter = (EditText) findViewById(R.id.className);
         maxStudentsEnter = (EditText) findViewById(R.id.numStudents);
         warningPercentage = (EditText) findViewById(R.id.warningPercentage);
+        msTimeout = (EditText) findViewById(R.id.msTimeout);
 
         Button createClass = (Button) findViewById(R.id.startClassButton);
 
@@ -83,6 +84,7 @@ public class Settings extends AppCompatActivity {
                 switchToTeacherV.putExtra("classID", idForClassroom);
                 switchToTeacherV.putExtra("classSize", Integer.parseInt(maxStudentsEnter.getText().toString()));
                 switchToTeacherV.putExtra("classWarningThreshold", Integer.parseInt(warningPercentage.getText().toString()));
+                switchToTeacherV.putExtra("msTimeout", Integer.parseInt(msTimeout.getText().toString()));
                 startActivity(switchToTeacherV);
             }
         }
@@ -132,15 +134,17 @@ public class Settings extends AppCompatActivity {
     private long createClassroom(Firebase referenceToUsers) {
         boolean maxStudentsHasContent = !maxStudentsEnter.getText().toString().isEmpty();
         boolean warningThresholdHasContent = !warningPercentage.getText().toString().isEmpty();
+        boolean msTimeoutHasContent = !msTimeout.getText().toString().isEmpty();
 
         /*
         To create a classroom, a connection to firebase has to have been made,
         and there must be a value entered in the max students field
         and the warning percentage field
          */
-        if (nextUniqueId > -1 && maxStudentsHasContent && warningThresholdHasContent) {
-            int maxStudents = Integer.parseInt(maxStudentsEnter.getText().toString());
-            int warningThreshold = Integer.parseInt(warningPercentage.getText().toString());
+        if (nextUniqueId > -1 && maxStudentsHasContent && warningThresholdHasContent && msTimeoutHasContent) {
+            long maxStudents = Long.parseLong(maxStudentsEnter.getText().toString());
+            long warningThreshold = Long.parseLong(warningPercentage.getText().toString());
+            long msTimeoutValue = Long.parseLong(msTimeout.getText().toString());
             String className = classNameEnter.getText().toString();
             long idForClassroom = nextUniqueId;
 
@@ -165,7 +169,7 @@ public class Settings extends AppCompatActivity {
             // the next unique Id is automatically incremented by a callback from Firebase
 
             // creates classroom in Firebase
-            Classroom room = new Classroom(warningThreshold, maxStudents, className); // sets the amount of IDUs and the threshold
+            Classroom room = new Classroom(warningThreshold, maxStudents, className, msTimeoutValue); // sets the amount of IDUs and the threshold
             Firebase pathToClassroom = referenceToUsers.child("/" + nextUniqueId + "/");
             pathToClassroom.setValue(room);
 
@@ -185,7 +189,12 @@ public class Settings extends AppCompatActivity {
 
             if (!warningThresholdHasContent) {
                 Log.d(CLASS_SIG, "tried to create a classroom without specifying warning threshold");
-                errorString += "Please specify warning threshold.";
+                errorString += "Please specify warning threshold.\n";
+            }
+
+            if (!msTimeoutHasContent) {
+                Log.d(CLASS_SIG, "tried to create a classroom without specifying a timeout");
+                errorString += "Please specify a button timeout.";
             }
 
             if (mainLayout != null) {

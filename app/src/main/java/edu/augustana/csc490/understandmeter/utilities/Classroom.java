@@ -9,29 +9,35 @@ import java.util.Date;
 public class Classroom {
 
     private long IDUs = 0;
-    private long timesReset = 0;
+    private long msToReset = 20000;
     private long threshold = 9999;
     private double warningPercentage = 1.0;
+    private boolean reset = false;
     private String created = new Date().toString();
     private String className = "Classroom";
     private long maxStudents = 9999;
 
-    public Classroom(long threshold, long maxStudents, String className) {
+    public Classroom(long threshold, long maxStudents, String className, long msToReset) {
         this.threshold = threshold;
         this.maxStudents = maxStudents;
         this.className = className;
+        this.msToReset = msToReset;
     }
 
     public long getIDUs() {
         return IDUs;
     }
 
-    public long getTimesReset() {
-        return timesReset;
+    public boolean isReset() {
+        return reset;
     }
 
     public long getThreshold() {
         return threshold;
+    }
+
+    public long getMsToReset() {
+        return msToReset;
     }
 
     public double getWarningPercentage() {
