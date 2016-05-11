@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.os.Vibrator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 
 import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,17 +45,16 @@ public class TeacherView extends AppCompatActivity {
     private Firebase myFirebase;
     private TextView showIDUs;
 
-    private long IDUs = -1;
-    private int classWarningThreshold = -1;
-    private AlertDialog alert;
-    private CountDownTimer timer;
+    private long IDUs, classWarningThreshold, msToReset;
+    private ScrollableSeries series1;
     private XYPlot plot;
-    private final Number[] series1Numbers = {5};
-    private final ScrollableSeries series1= new ScrollableSeries(Arrays.asList(series1Numbers), 0, "Series1");
+    private AlertDialog alert;
+    private Thread updater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_teacher_view);
 
         ActionBar ab = getSupportActionBar();
@@ -65,6 +66,7 @@ public class TeacherView extends AppCompatActivity {
         long classId = intent.getLongExtra("classID", -1);
         int classSize = intent.getIntExtra("classSize", -1);
         classWarningThreshold = intent.getIntExtra("classWarningThreshold", -1);
+        msToReset = 1000 * intent.getIntExtra("msTimeout", -1);
 
         if (classId > -1 && classSize > -1 && classWarningThreshold > -1) {
             TextView classIdView = (TextView) findViewById(R.id.numberCounter);
@@ -103,6 +105,9 @@ public class TeacherView extends AppCompatActivity {
                             builder.setCancelable(true);
                             alert = builder.create();
                             alert.show();
+
+                            Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                            vibrator.vibrate(5000);
                         }
                     }
                 }
@@ -148,20 +153,39 @@ public class TeacherView extends AppCompatActivity {
                 endClass.setOnClickListener(returnMainScreen);
             }
         }
-        plot= (XYPlot) findViewById(R.id.plot);
+
+        Number[] series1Numbers = {};
+        series1 = new ScrollableSeries(Arrays.asList(series1Numbers), 0, "IDUs");
+        plot = (XYPlot) findViewById(R.id.plot);
+
+        if (plot != null) {
+            plot.setRangeBoundaries(0, classSize, BoundaryMode.FIXED);
+            plot.setRangeValueFormat(new DecimalFormat("0"));
+            plot.setTicksPerDomainLabel(15);
+        }
+
         LineAndPointFormatter series1Format = new LineAndPointFormatter();
         plot.addSeries(series1, series1Format);
-        timer = new CountDownTimer(3000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                series1.add(10);
-                plot.redraw();
-            }
 
-            public void onFinish() {
+        updater = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        if (IDUs > -1) {
+                            series1.add(IDUs);
+                            plot.redraw();
+                            Thread.sleep(msToReset);
+                        }
+                    } catch (InterruptedException err) {
+                        Log.e(CLASS_SIG, err.getMessage());
+                    }
+                }
             }
-        };
+        });
 
-    };
+        updater.start();
+    }
 
     View.OnClickListener returnMainScreen = new View.OnClickListener() {
         @Override
@@ -187,13 +211,40 @@ public class TeacherView extends AppCompatActivity {
                 });
             }
 
-            if (Build.VERSION.SDK_INT >= 16) {
-                onNavigateUp();
-            } else {
-                onBackPressed();
-            }
+            goBack();
 
         }
     };
+
+
+    @Override
+    public void onBackPressed() {
+        try {
+            updater.join();
+        } catch (InterruptedException err) {
+            Log.e(CLASS_SIG, err.getMessage());
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onNavigateUp() {
+        try {
+            updater.join();
+        } catch (InterruptedException err) {
+            Log.e(CLASS_SIG, err.getMessage());
+        }
+        return super.onNavigateUp();
+    }
+
+    private void goBack() {
+        if (Build.VERSION.SDK_INT >= 16) {
+            onNavigateUp();
+        } else {
+            onBackPressed();
+        }
+    }
+
+
 }
 
