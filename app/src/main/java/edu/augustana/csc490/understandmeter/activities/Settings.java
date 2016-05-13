@@ -25,18 +25,28 @@ import edu.augustana.csc490.understandmeter.utilities.SavedValues;
 /**
  * Created by Scott Dav on 4/18/2016.
  *
+ * This class runs the activity which presents the class settings to the user
+ * after the Create Class button is clicked.
+ *
  * @author Scott Davis, Nick Caputo
  */
 public class Settings extends AppCompatActivity {
-
+    //This sets the app heading at the top of the screen to say settings
     private static final String CLASS_SIG = "Settings";
-
+    //these are the text fields which the user will enter in data to regarding information and settings
+    //about the class
     private EditText classNameEnter, maxStudentsEnter, warningPercentage, msTimeout;
+    //the main layout for the activity which is gathered from activity_class_settings
     private View mainLayout;
+    //the initial value for IDUs when a class is instantiated
     private long nextUniqueId = -1;
+    //creates the firebase object which we will be communicating with in order to get IDUs and
+    //other class information
     private Firebase myFirebase;
+    //a boolean which determines the initial connectivity to a class
     private boolean showedInitialConnectionNotify = false;
 
+    //launches the activity and sets the layout on the screen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actvity_class_settings);
@@ -63,7 +73,8 @@ public class Settings extends AppCompatActivity {
             createClass.setOnClickListener(startClass);
         }
     }
-
+//When the user presses the start class button, this method is called to upload all the data to
+//firebase and then launch the TeacherView activity.
     private View.OnClickListener startClass = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
