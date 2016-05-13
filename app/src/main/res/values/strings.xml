@@ -26,7 +26,7 @@
     <string name="studentsNotifyTitle">Students message</string>
     <string name="studentsNotifyContent">The specified portion of students do not understand
         the topic.</string>
-    <string name="currentIDUsTitle">Confused students:</string>
+    <string name="currentIDUsTitle">Confused\nstudents:</string>
 
     <!-- For the UnderstandButtons activity -->
     <string name="studentTitle">Student View</string>

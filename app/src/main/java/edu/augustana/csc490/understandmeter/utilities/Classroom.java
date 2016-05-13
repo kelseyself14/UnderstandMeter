@@ -3,11 +3,15 @@ package edu.augustana.csc490.understandmeter.utilities;
 import java.util.Date;
 
 /**
- * This is a method to create a classroom.
+ * This is a method to create a classroom,
+ * deserialized by Firebase to save this information
+ * on the server.
+ *
  * Created by Nick Caputo on 4/25/2016.
  */
 public class Classroom {
 
+    // these are all sent and modified on Firebase
     private long IDUs = 0;
     private long msToReset = 20000;
     private long threshold = 9999;

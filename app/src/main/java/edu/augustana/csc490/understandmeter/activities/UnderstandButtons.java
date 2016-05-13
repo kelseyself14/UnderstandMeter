@@ -176,6 +176,8 @@ public class UnderstandButtons extends AppCompatActivity {
                                 "Enter the correct class ID first",
                                 Snackbar.LENGTH_SHORT).show();
                     }
+
+                    goBack();
                 }
             }
 
