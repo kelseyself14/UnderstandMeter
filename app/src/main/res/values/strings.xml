@@ -1,17 +1,18 @@
 <resources>
-    <string name="app_name">HeyTeacher!</string>
+    <string name="app_name">HeyTeacher</string>
 
     <!-- For the main activity -->
     <string name="heyTeacherTitle">Hey Teacher!</string>
     <string name="createClass">Create New Class</string>
     <string name="joinClass">Join Class</string>
     <string name="teacherHelp">Help text</string>
+    <string name="goToAbout">About Us</string>
 
     <!-- For the Help activity -->
     <string name="studentHelp">In this app you
         first click on join class. That will take you to a
-        new screen that you can click on I do understand
-        or I do not understand.</string>
+        new screen that you can click on if you do not understand
+        the topic.</string>
 
     <!-- For the teacher view class -->
     <string name="teacherTitle">Teacher View</string>

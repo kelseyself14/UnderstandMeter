@@ -27,6 +27,7 @@
         <activity
             android:name=".activities.Settings"
             android:parentActivityName=".activities.MainActivity"
+            android:screenOrientation="portrait"
             tools:ignore="UnusedAttribute" />
 
         <activity
@@ -39,7 +40,7 @@
             android:parentActivityName=".activities.Settings"
             tools:ignore="UnusedAttribute" />
 
-        
+
     </application>
 
 </manifest>

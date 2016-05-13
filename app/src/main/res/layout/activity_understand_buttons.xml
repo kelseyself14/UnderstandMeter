@@ -11,32 +11,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activities.UnderstandButtons">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/classIdEnterLayout"
+    <TextView
+        android:id="@+id/className"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true">
-
-        <EditText
-            android:id="@+id/classIdEnter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/classIdEnter"
-            android:inputType="number"
-            android:minWidth="250dip"
-            android:textAlignment="center"
-            tools:ignore="UnusedAttribute" />
-
-    </android.support.design.widget.TextInputLayout>
-
-    <Button
-        android:id="@+id/connectToClass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/classIdEnterLayout"
         android:layout_centerHorizontal="true"
-        android:text="@string/connectToClass" />
-
+        android:paddingTop="25dip"
+        android:text="@string/classIdEnter"
+        android:textSize="25sp" />
 
     <Button
         android:id="@+id/NotUnderstand"
@@ -44,10 +26,10 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@color/red"
+        android:padding="10dip"
         android:text="@string/notUnderstand"
         android:textColor="@android:color/black"
-        android:textSize="30sp"
-        android:padding="10dip"/>
+        android:textSize="30sp" />
 
     <Button
         android:id="@+id/logOut"

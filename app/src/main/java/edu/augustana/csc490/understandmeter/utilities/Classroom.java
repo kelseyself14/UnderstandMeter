@@ -14,7 +14,7 @@ public class Classroom {
     private double warningPercentage = 1.0;
     private boolean reset = false;
     private String created = new Date().toString();
-    private String className = "Classroom";
+    private String className = null;
     private long maxStudents = 9999;
 
     public Classroom(long threshold, long maxStudents, String className, long msToReset) {

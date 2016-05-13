@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,11 +31,11 @@ public class UnderstandButtons extends AppCompatActivity {
 
     private boolean connected = false;
     private boolean submitted = false;
+    private String className = null;
     private AlertDialog prompt;
     private View mainLayout;
-    private EditText classIDEditText;
-    private TextView countDownText;
-    private Button notUnderstandButton, connectToClassroom, logOut;
+    private TextView classNameLabel, countDownText;
+    private Button notUnderstandButton, logOut;
     private long secondsToTimeout = 20;
 
     private CountDownTimer timer;
@@ -56,29 +55,22 @@ public class UnderstandButtons extends AppCompatActivity {
         }
 
         mainLayout = findViewById(R.id.understandButtonsLayout);
-
-        classIDEditText = (EditText) findViewById(R.id.classIdEnter);
+        classNameLabel = (TextView) findViewById(R.id.className);
 
         notUnderstandButton = (Button) findViewById(R.id.NotUnderstand);
-
         if (notUnderstandButton != null) {
             notUnderstandButton.setOnClickListener(displayNotUnderstand);
         }
 
         logOut = (Button) findViewById(R.id.logOut);
-
         if (logOut != null) {
             logOut.setOnClickListener(returnMain);
             logOut.setEnabled(false);
         }
 
-        connectToClassroom = (Button) findViewById(R.id.connectToClass);
-
-        if (connectToClassroom != null) {
-            connectToClassroom.setOnClickListener(connectToClassroomListener);
-        }
-
         countDownText = (TextView) findViewById(R.id.mCountDown);
+
+        setUpFirebase();
     }
 
     private View.OnClickListener returnMain = new View.OnClickListener() {
@@ -143,108 +135,114 @@ public class UnderstandButtons extends AppCompatActivity {
         }
     };
 
-    private View.OnClickListener connectToClassroomListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (!classIDEditText.getText().toString().isEmpty()) {
-                connected = false;
-                long classId = Long.parseLong(classIDEditText.getText().toString());
-                myFirebase = new Firebase(SavedValues.FIREBASE_URL).child("classrooms/" + classId);
+    private void setUpFirebase() {
+        connected = false;
+        String classId = getIntent().getStringExtra("classId");
+        myFirebase = new Firebase(SavedValues.FIREBASE_URL).child("classrooms/" + classId);
 
-                myFirebase.child("idus").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
+        myFirebase.child("className").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                className = (String) dataSnapshot.getValue();
 
-                            connected = true;
-
-//                            IDUs = (long) dataSnapshot.getValue();
-
-//                            if (mainLayout != null) {
-//                                Snackbar.make(mainLayout,
-//                                        "Updated IDU values!", Snackbar.LENGTH_LONG).show();
-//                            }
-
-                            connectToClassroom.setEnabled(false);
-                            connectToClassroom.setText(R.string.connectedToClass);
-
-                            logOut.setEnabled(true);
-
-                        } else {
-                            if (mainLayout != null) {
-                                Snackbar.make(mainLayout,
-                                        "Enter the correct class ID first",
-                                        Snackbar.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-
-                    }
-                });
-
-                myFirebase.child("reset").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            boolean isReset = (boolean) dataSnapshot.getValue();
-                            if (isReset) {
-                                Toast.makeText(UnderstandButtons.this, "The class has ended.", Toast.LENGTH_LONG).show();
-                                goBack();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-
-                    }
-                });
-
-                myFirebase.child("msToReset").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            secondsToTimeout = (long) dataSnapshot.getValue();
-                            Toast.makeText(UnderstandButtons.this, "Timeout is set to " + secondsToTimeout + " seconds.", Toast.LENGTH_SHORT).show();
-
-                            timer = new CountDownTimer((secondsToTimeout * 1000), 1000) {
-
-                                public void onTick(long millisUntilFinished) {
-                                    String toShow = "Seconds Remaining: " + millisUntilFinished / 1000;
-                                    countDownText.setText(toShow);
-                                }
-
-                                public void onFinish() {
-                                    notUnderstandButton.setEnabled(true);
-                                    notUnderstandButton.setClickable(true);
-                                    countDownText.setText(R.string.pressAgain);
-
-                                    if (submitted) {
-                                        decrementIDUs();
-                                    }
-
-                                    if (Build.VERSION.SDK_INT >= 23) {
-                                        notUnderstandButton.setBackgroundColor(getColor(R.color.red));
-                                    } else {
-                                        //noinspection deprecation
-                                        notUnderstandButton.setBackgroundColor(getResources().getColor(R.color.red));
-                                    }
-                                }
-                            };
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-
-                    }
-                });
+                //
+                classNameLabel.setText(className);
             }
-        }
-    };
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e(CLASS_SIG, firebaseError.getMessage());
+            }
+        });
+
+        myFirebase.child("idus").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    connected = true;
+
+//                    long IDUs = (long) dataSnapshot.getValue();
+//                    if (mainLayout != null) {
+//                        Snackbar.make(mainLayout,
+//                                "Updated IDU values!", Snackbar.LENGTH_LONG).show();
+//                    }
+
+                    logOut.setEnabled(true);
+
+                } else {
+                    if (mainLayout != null) {
+                        Snackbar.make(mainLayout,
+                                "Enter the correct class ID first",
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e(CLASS_SIG, firebaseError.getMessage());
+            }
+        });
+
+        myFirebase.child("reset").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    boolean isReset = (boolean) dataSnapshot.getValue();
+                    if (isReset) {
+                        Toast.makeText(UnderstandButtons.this, "The class has ended.", Toast.LENGTH_LONG).show();
+                        goBack();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e(CLASS_SIG, firebaseError.getMessage());
+            }
+        });
+
+        myFirebase.child("msToReset").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    secondsToTimeout = (long) dataSnapshot.getValue();
+                    Toast.makeText(UnderstandButtons.this, "Timeout is set to " + secondsToTimeout + " seconds.", Toast.LENGTH_SHORT).show();
+
+                    timer = new CountDownTimer((secondsToTimeout * 1000), 1000) {
+
+                        public void onTick(long millisUntilFinished) {
+                            String toShow = "Seconds Remaining: " + millisUntilFinished / 1000;
+                            countDownText.setText(toShow);
+                        }
+
+                        public void onFinish() {
+                            notUnderstandButton.setEnabled(true);
+                            notUnderstandButton.setClickable(true);
+                            countDownText.setText(R.string.pressAgain);
+
+                            if (submitted) {
+                                decrementIDUs();
+                            }
+
+                            if (Build.VERSION.SDK_INT >= 23) {
+                                notUnderstandButton.setBackgroundColor(getColor(R.color.red));
+                            } else {
+                                //noinspection deprecation
+                                notUnderstandButton.setBackgroundColor(getResources().getColor(R.color.red));
+                            }
+                        }
+                    };
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e(CLASS_SIG, firebaseError.getMessage());
+            }
+        });
+    }
 
     @Override
     public void onBackPressed() {
