@@ -18,8 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/showIDUsTitle"
-        android:layout_toStartOf="@+id/showIDUsTitle"
+        android:layout_toLeftOf="@+id/commandCenter"
+        android:layout_toStartOf="@+id/commandCenter"
         ap:backgroundColor="#000000"
         ap:borderColor="#000000"
         ap:domainLabel="Time Units"
@@ -52,74 +52,100 @@
         ap:rangeOriginTickLabelTextSize="15sp"
         ap:rangeTickLabelTextSize="15sp" />
 
-    <TextView
-        android:id="@+id/classIdTitle"
+    <RelativeLayout
+        android:id="@+id/commandCenter"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/plot"
-        android:layout_toRightOf="@+id/plot"
-        android:text="@string/classId"
-        android:textSize="25sp" />
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true">
 
-    <TextView
-        android:id="@+id/numberCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/endClassButton"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/endClassButton"
-        android:padding="15dip"
-        android:paddingTop="10dip"
-        android:text="@string/initializedNumberCount"
-        android:textAlignment="center"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="40sp"
-        tools:ignore="UnusedAttribute" />
+        <LinearLayout
+            android:id="@+id/classIdLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
 
-    <TextView
-        android:id="@+id/showIDUsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/showIDUs"
-        android:layout_toStartOf="@+id/showIDUs"
-        android:text="@string/currentIDUsTitle"
-        android:textSize="30sp"
-        tools:ignore="UnusedAttribute" />
+            <TextView
+                android:id="@+id/classIdTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="27dip"
+                android:text="@string/classId"
+                android:textSize="25sp" />
 
-    <TextView
-        android:id="@+id/showIDUs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/classIdTitle"
-        android:layout_alignLeft="@+id/numberCounter"
-        android:layout_alignStart="@+id/numberCounter"
-        android:layout_centerVertical="true"
-        android:text="@string/initializedNumberCount"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="50sp" />
+            <TextView
+                android:id="@+id/showIDUs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="15dip"
+                android:paddingTop="10dip"
+                android:text="@string/initializedNumberCount"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="40sp"
+                tools:ignore="UnusedAttribute" />
 
-    <Button
-        android:id="@+id/resetIDUCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/endClassButton"
-        android:layout_toStartOf="@+id/endClassButton"
-        android:background="@color/blue"
-        android:padding="15dip"
-        android:text="@string/resetIDUs" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/endClassButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="10dip"
-        android:layout_marginStart="10dip"
-        android:background="@color/red"
-        android:text="@string/endClass" />
+        <LinearLayout
+            android:id="@+id/IDUlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/classIdLayout"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:id="@+id/showIDUsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingRight="25dip"
+                android:text="@string/currentIDUsTitle"
+                android:textSize="25sp"
+                tools:ignore="UnusedAttribute" />
+
+            <TextView
+                android:id="@+id/numberCounter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/initializedNumberCount"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="50sp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/buttonLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true">
+
+            <Button
+                android:id="@+id/resetIDUCounter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/endClassButton"
+                android:layout_toStartOf="@+id/endClassButton"
+                android:background="@color/blue"
+                android:padding="15dip"
+                android:text="@string/resetIDUs" />
+
+            <Button
+                android:id="@+id/endClassButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="10dip"
+                android:layout_marginStart="10dip"
+                android:background="@color/red"
+                android:text="@string/endClass" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
 </RelativeLayout>
