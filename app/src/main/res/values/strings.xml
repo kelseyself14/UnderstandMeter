@@ -20,13 +20,13 @@
     <string name="studentLabel">Students: </string>
     <string name="teacherLabel">Teacher: </string>
     <string name="initializedNumberCount">-1</string>
-    <string name="classId">Class ID Number:</string>
-    <string name="endClass">End class</string>
-    <string name="resetIDUs">Reset Student Counter</string>
+    <string name="classId">Class ID:</string>
+    <string name="endClass">End</string>
+    <string name="resetIDUs">Reset</string>
     <string name="studentsNotifyTitle">Students message</string>
     <string name="studentsNotifyContent">The specified portion of students do not understand
         the topic.</string>
-    <string name="currentIDUsTitle">This many students do not understand</string>
+    <string name="currentIDUsTitle">Confused students:</string>
 
     <!-- For the UnderstandButtons activity -->
     <string name="studentTitle">Student View</string>

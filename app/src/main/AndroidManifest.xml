@@ -4,6 +4,7 @@
     package="edu.augustana.csc490.understandmeter">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -38,6 +39,7 @@
         <activity
             android:name=".activities.TeacherView"
             android:parentActivityName=".activities.Settings"
+            android:screenOrientation="landscape"
             tools:ignore="UnusedAttribute" />
 
 
