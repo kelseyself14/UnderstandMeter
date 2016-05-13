@@ -38,17 +38,27 @@ import edu.augustana.csc490.understandmeter.R;
 import edu.augustana.csc490.understandmeter.utilities.SavedValues;
 import edu.augustana.csc490.understandmeter.utilities.ScrollableSeries;
 
+/*
+This Class lacunches the Teacher View activity. This view displays the current number of IDUs, the
+class ID, as well as a graph which shows the number of IDUs over time.
+*/
 public class TeacherView extends AppCompatActivity {
-
+    //This sets the title seen at the top of the app
     private static final String CLASS_SIG = "TeacherView";
-
+    //This creates the firebase object which we communicate with to send/recieve data
     private Firebase myFirebase;
+    //This shows the title for the current number of IDUs
     private TextView showIDUs;
-
+    //These values store the current number of IDUs, the warning threshold, and the reset time for
+    //the graphy
     private long IDUs, classWarningThreshold, msToReset;
+    //This stores the graphing points for the IDUs
     private ScrollableSeries series1;
+    //This is the graph which is used to display the IDUs over time
     private XYPlot plot;
+    //This is the alert that will pop up if IDU warning threshold has been met
     private AlertDialog alert;
+    //This thread is created to run and update the graph
     private Thread updater;
 
     @Override
