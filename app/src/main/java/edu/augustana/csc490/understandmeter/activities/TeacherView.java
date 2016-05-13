@@ -186,7 +186,7 @@ public class TeacherView extends AppCompatActivity {
             plot.setTicksPerDomainLabel(15);
         }
 
-        LineAndPointFormatter series1Format = new LineAndPointFormatter(Color.rgb(0,0,200), Color.BLACK, null, null);
+        LineAndPointFormatter series1Format = new LineAndPointFormatter(Color.rgb(200,0,0), Color.WHITE, null, null);
         plot.addSeries(series1, series1Format);
 
         updater = new Thread(new Runnable() {
