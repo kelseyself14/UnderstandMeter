@@ -91,7 +91,7 @@ public class TeacherView extends AppCompatActivity {
             Firebase.setAndroidContext(this);
             myFirebase = new Firebase(SavedValues.FIREBASE_URL)
                     .child("classrooms/" + classId);
-
+            //handles the alert to teacher
             myFirebase.child("idus").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -128,34 +128,7 @@ public class TeacherView extends AppCompatActivity {
                 }
             });
 
-            Button resetIDUs = (Button) findViewById(R.id.resetIDUCounter);
-
-            if (resetIDUs != null) {
-                resetIDUs.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        myFirebase.child("idus").setValue(0);
-                        myFirebase.child("resetCounter").runTransaction(new Transaction.Handler() {
-                            @Override
-                            public Transaction.Result doTransaction(MutableData mutableData) {
-                                mutableData.setValue((long) mutableData.getValue() + 1);
-                                return Transaction.success(mutableData);
-                            }
-
-                            @Override
-                            public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
-                                if (b) {
-                                    String toPrint = "Reset the students IDUs";
-                                    Toast.makeText(TeacherView.this, toPrint, Toast.LENGTH_SHORT).show();
-                                    Log.d(CLASS_SIG, toPrint);
-                                } else {
-                                    Log.e(CLASS_SIG, firebaseError.getDetails());
-                                }
-                            }
-                        });
-                    }
-                });
-            }
+            IDUPoll();
 
             Button endClass = (Button) findViewById(R.id.endClassButton);
 
@@ -164,6 +137,45 @@ public class TeacherView extends AppCompatActivity {
             }
         }
 
+        XYPlotter(classSize);
+    }
+
+//Polls firebase to retrieve and reset the IDUs
+    private void IDUPoll() {
+        Button resetIDUs = (Button) findViewById(R.id.resetIDUCounter);
+
+        if (resetIDUs != null) {
+            resetIDUs.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    myFirebase.child("idus").setValue(0);
+                    myFirebase.child("resetCounter").runTransaction(new Transaction.Handler() {
+                        @Override
+                        public Transaction.Result doTransaction(MutableData mutableData) {
+                            mutableData.setValue((long) mutableData.getValue() + 1);
+                            return Transaction.success(mutableData);
+                        }
+
+                        @Override
+                        public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                            if (b) {
+                                String toPrint = "Reset the students IDUs";
+                                Toast.makeText(TeacherView.this, toPrint, Toast.LENGTH_SHORT).show();
+                                Log.d(CLASS_SIG, toPrint);
+                            } else {
+                                Log.e(CLASS_SIG, firebaseError.getDetails());
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    /*this method plots a graph for the teacher to know how many students do not understand anything at a given minute
+    during a lecture it implements a thread and an outside library Android plot
+    Code extensively used: http://androidplot.com/docs/a-dynamic-xy-plot/ */
+    private void XYPlotter(int classSize) {
         Number[] series1Numbers = {};
         series1 = new ScrollableSeries(Arrays.asList(series1Numbers), 0, "IDUs");
         plot = (XYPlot) findViewById(R.id.plot);
@@ -174,7 +186,7 @@ public class TeacherView extends AppCompatActivity {
             plot.setTicksPerDomainLabel(15);
         }
 
-        LineAndPointFormatter series1Format = new LineAndPointFormatter();
+        LineAndPointFormatter series1Format = new LineAndPointFormatter(Color.rgb(0,0,200), Color.BLACK, null, null);
         plot.addSeries(series1, series1Format);
 
         updater = new Thread(new Runnable() {
@@ -197,6 +209,7 @@ public class TeacherView extends AppCompatActivity {
         updater.start();
     }
 
+    //resets the class
     View.OnClickListener returnMainScreen = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
