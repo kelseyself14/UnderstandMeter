@@ -7,4 +7,5 @@ package edu.augustana.csc490.understandmeter.utilities;
 public class SavedValues {
 
     public static final String FIREBASE_URL = "https://dazzling-heat-4680.firebaseIO.com/";
+    
 }
