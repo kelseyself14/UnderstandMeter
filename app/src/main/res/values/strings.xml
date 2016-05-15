@@ -5,7 +5,6 @@
     <string name="heyTeacherTitle">Hey Teacher!</string>
     <string name="createClass">Create New Class</string>
     <string name="joinClass">Join Class</string>
-    <string name="teacherHelp">Help text</string>
     <string name="goToAbout">About Us</string>
 
     <!-- For the Help activity -->
@@ -13,12 +12,22 @@
         first click on join class. That will take you to a
         new screen that you can click on if you do not understand
         the topic.</string>
+    <string name="teacherHelp">You can click on \"create a class\"
+        to set up a new class, where you can give it a
+        name, amount of students, number of students you want to
+        have report before being notified, and the timeout for
+        students to submit a new request for clarification.  You
+        will receive a new id, which the students can use to
+        connect to the class.</string>
+    <string name="devsTitle">Developers</string>
+    <string name="devs">Nick Caputo, Scott Davis, Kelsey Self,
+        Jeffrey Prior, and Danya Tazyeen</string>
+    <string name="studentLabel">Students: </string>
+    <string name="teacherLabel">Teacher: </string>
 
     <!-- For the teacher view class -->
     <string name="teacherTitle">Teacher View</string>
     <string name="logout">Log Out</string>
-    <string name="studentLabel">Students: </string>
-    <string name="teacherLabel">Teacher: </string>
     <string name="initializedNumberCount">-1</string>
     <string name="classId">Class ID:</string>
     <string name="endClass">End</string>
